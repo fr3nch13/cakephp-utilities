@@ -6,5 +6,5 @@ parameters:
     ignoreErrors:
     - '#Constant [A-Z_]+ not found.#'
     -
-		message: '#If condition is always false.#'
-		path: src/View/Helper/ColorHelper.php
+        message: '#If condition is always false.#'
+        path: src/View/Helper/ColorHelper.php

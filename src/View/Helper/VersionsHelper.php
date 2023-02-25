@@ -216,6 +216,7 @@ class VersionsHelper extends Helper
         } catch (\Throwable $e) {
             throw new \Exception(__('Unable to find the `which` command.'));
         }
+        debug($result_code);
         if ($result_code) {
             throw new \Exception(__('Command failed: {0}', [$cmd]));
         }

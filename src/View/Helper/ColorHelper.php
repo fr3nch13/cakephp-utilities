@@ -28,7 +28,7 @@ class ColorHelper extends Helper
         if ($hexCode[0] == '#') {
             $hexCode = substr($hexCode, 1);
         }
-        if (strlen($hexCode) == 3) { /** @phpstan-ignore-line */
+        if (strlen($hexCode) == 3) { // @phpstan-ignore-line
             $hexCode = $hexCode[0] . $hexCode[0] . $hexCode[1] . $hexCode[1] . $hexCode[2] . $hexCode[2];
         }
         $r = hexdec($hexCode[0] . $hexCode[1]);

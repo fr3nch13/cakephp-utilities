@@ -105,9 +105,9 @@ class VersionsHelper extends Helper
     /**
      * Gets the version of this app using git
      *
-     * @return string The version according to git
+     * @return string|null The version according to git
      */
-    public function app(): string
+    public function app(): ?string
     {
         // see if we're running on an actual branch
         $out = null;
@@ -127,10 +127,14 @@ class VersionsHelper extends Helper
         }
         // most likely we're on a tag/version
         if (stripos($out, 'detached') !== false) {
-            $results = $this->runGit(['describe', '--tags']);
-            if (isset($results[0])) {
-                $out = $results[0];
+            try {
+                $results = $this->runGit(['describe', '--tags']);
+                if (isset($results[0])) {
+                    $out = $results[0];
+                }
+            } catch (\Exception $e) {
             }
+
         }
 
         return $out;
@@ -216,7 +220,6 @@ class VersionsHelper extends Helper
         } catch (\Throwable $e) {
             throw new \Exception(__('Unable to find the `which` command.'));
         }
-        debug($result_code);
         if ($result_code) {
             $msg = json_encode([
                 'message' => 'Command failed',

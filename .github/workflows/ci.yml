@@ -59,10 +59,7 @@ jobs:
       run: composer install
 
     - name: Run PHP Analyzer
-      run: |
-        - git config --global user.email "french13@gmail.com"
-        - git config --global user.name "Brian French"
-        - composer run-script phpstan
+      run: composer run-script phpstan
 
   test:
     runs-on: ubuntu-22.04
@@ -88,10 +85,7 @@ jobs:
       run: composer install
 
     - name: Run PHPUnit
-      run: |
-        - git config --global user.email "french13@gmail.com"
-        - git config --global user.name "Brian French"
-        - composer run-script test
+      run: composer run-script test
 
   coverage-php:
     runs-on: ubuntu-22.04
@@ -117,10 +111,7 @@ jobs:
       run: composer install
 
     - name: Run PHPUnit
-      run: |
-        - git config --global user.email "french13@gmail.com"
-        - git config --global user.name "Brian French"
-        - composer run-script coverage-clover
+      run: composer run-script coverage-clover
 
     - name: Upload to Codecov
       uses: codecov/codecov-action@v2

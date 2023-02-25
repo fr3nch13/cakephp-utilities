@@ -20,7 +20,8 @@ jobs:
     name: Coding Standard - PHP - ${{ matrix.php-version }}
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Git checkout
+      uses: actions/checkout@v3
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -46,7 +47,8 @@ jobs:
     name: Static Analysis - PHP -  ${{ matrix.php-version }}
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Git checkout
+      uses: actions/checkout@v3
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -74,16 +76,6 @@ jobs:
     steps:
     - name: Git checkout
       uses: actions/checkout@v3
-      with:
-        fetch-depth: '0'
-      run: |
-        - # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
-        - git --version
-        - git config user.name "GitHub Actions Bot"
-        - git config user.email "<>"
-        - git status
-        - git tag
-        - git describe
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -96,7 +88,15 @@ jobs:
       run: composer install
 
     - name: Run PHPUnit
-      run: composer run-script test
+      run: |
+        # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
+        git --version
+        git config user.name "GitHub Actions Bot"
+        git config user.email "<>"
+        git status
+        git tag
+        git describe
+        composer run-script test
 
   coverage-php:
     runs-on: ubuntu-22.04
@@ -109,7 +109,8 @@ jobs:
     name: Coverage - PHP - ${{ matrix.php-version }}
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Git checkout
+      uses: actions/checkout@v3
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -122,7 +123,15 @@ jobs:
       run: composer install
 
     - name: Run PHPUnit
-      run: composer run-script coverage-clover
+      run:  |
+        # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
+        git --version
+        git config user.name "GitHub Actions Bot"
+        git config user.email "<>"
+        git status
+        git tag
+        git describe
+        composer run-script coverage-clover
 
     - name: Upload to Codecov
       uses: codecov/codecov-action@v2

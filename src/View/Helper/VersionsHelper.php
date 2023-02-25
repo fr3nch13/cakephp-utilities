@@ -120,7 +120,7 @@ class VersionsHelper extends Helper
         }
         if ($out) {
             $matches = [];
-            if (preg_match('/^\(HEAD detached at (\w+)\)$/', $out, $matches)) {
+            if (preg_match('/^\(HEAD detached at ([\/\w]+)\)$/', $out, $matches)) {
                 $out = $matches[1];
             }
             $out = 'dev-' . $out;

@@ -13,6 +13,6 @@
 !/.composercache/empty
 
 # Allow builds on multiple php versions
-composer.lock
+/composer.lock
 
 /.vscode

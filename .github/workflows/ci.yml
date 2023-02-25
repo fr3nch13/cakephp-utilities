@@ -33,7 +33,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Composer install
-      run: composer install
+      run: |
+        composer config github-oauth.github.com ${{ secrets.ACTIONS_TOKEN }}
+        composer install
 
     - name: Run PHP CodeSniffer
       run: composer run-script cs-checkstyle | vendor/bin/cs2pr
@@ -60,7 +62,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Composer install
-      run: composer install
+      run: |
+        composer config github-oauth.github.com ${{ secrets.ACTIONS_TOKEN }}
+        composer install
 
     - name: Run PHP Analyzer
       run: composer run-script phpstan
@@ -87,7 +91,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Composer install
-      run: composer install
+      run: |
+        composer config github-oauth.github.com ${{ secrets.ACTIONS_TOKEN }}
+        composer install
 
     - name: Run PHPUnit
       run: composer run-script test
@@ -114,13 +120,15 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Composer install
-      run: composer install
+      run: |
+        composer config github-oauth.github.com ${{ secrets.ACTIONS_TOKEN }}
+        composer install
 
     - name: Run PHPUnit
       run:  composer run-script coverage-clover
 
     - name: Upload to Codecov
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./tmp/coverage.xml

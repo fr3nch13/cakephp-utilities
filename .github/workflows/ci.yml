@@ -49,7 +49,7 @@ jobs:
       with:
         php-version: ${{ matrix.php-version }}
         extensions: mbstring, intl
-        coverage: none
+        coverage: xdebug
 
     - name: Composer install
       run: composer install

@@ -60,7 +60,7 @@ class VersionsHelperTest extends TestCase
     {
         $results = $this->Versions->runGit(['branch']);
         if (count($results) == 1) {
-            $this->assertMatchesRegularExpression('^\*\s+([\(\)\w\s\/]+)$', $results[0]);
+            $this->assertMatchesRegularExpression('/^\*\s+([\(\)\w\s\/]+)$/i', $results[0]);
         } else {
             $result = '';
             foreach ($results as $i => $line) {

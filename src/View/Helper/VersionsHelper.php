@@ -134,7 +134,6 @@ class VersionsHelper extends Helper
                 }
             } catch (\Exception $e) {
             }
-
         }
 
         return $out;

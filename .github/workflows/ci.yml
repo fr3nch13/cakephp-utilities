@@ -88,15 +88,7 @@ jobs:
       run: composer install
 
     - name: Run PHPUnit
-      run: |
-        # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
-        git --version
-        git config user.name "GitHub Actions Bot"
-        git config user.email "<>"
-        git status
-        git tag
-        git describe
-        composer run-script test
+      run: composer run-script test
 
   coverage-php:
     runs-on: ubuntu-22.04
@@ -123,15 +115,7 @@ jobs:
       run: composer install
 
     - name: Run PHPUnit
-      run:  |
-        # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
-        git --version
-        git config user.name "GitHub Actions Bot"
-        git config user.email "<>"
-        git status
-        git tag
-        git describe
-        composer run-script coverage-clover
+      run:  composer run-script coverage-clover
 
     - name: Upload to Codecov
       uses: codecov/codecov-action@v2

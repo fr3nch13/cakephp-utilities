@@ -220,6 +220,7 @@ class VersionsHelper extends Helper
             throw new \Exception(__('Unable to find the `which` command.'));
         }
         if ($result_code) {
+            /** @var string $msg */
             $msg = json_encode([
                 'message' => 'Command failed',
                 'cmd' => '{0}',

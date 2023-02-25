@@ -212,11 +212,11 @@ class VersionsHelper extends Helper
         $cmd = $this->gitCmd . ' ' . implode(' ', $args);
         $output = [];
         try {
-            $result = exec($cmd, $output, $result_code);
+            exec($cmd, $output, $result_code);
         } catch (\Throwable $e) {
             throw new \Exception(__('Unable to find the `which` command.'));
         }
-        if (!$result || $result_code) {
+        if ($result_code) {
             throw new \Exception(__('Command failed: {0}', [$cmd]));
         }
         // trim the results

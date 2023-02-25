@@ -32,7 +32,7 @@ class ColorHelper extends Helper
         if ($len == 3) {
             $hexCode = $hexCode[0] . $hexCode[0] . $hexCode[1] . $hexCode[1] . $hexCode[2] . $hexCode[2];
         } else {
-            //
+            // being curious
         }
         $r = hexdec($hexCode[0] . $hexCode[1]);
         $g = hexdec($hexCode[2] . $hexCode[3]);

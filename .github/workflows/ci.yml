@@ -72,7 +72,18 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Git checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: '0'
+      run: |
+        # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
+        git --version
+        git config user.name "GitHub Actions Bot"
+        git config user.email "<>"
+        git status
+        git tag
+        git describe
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2

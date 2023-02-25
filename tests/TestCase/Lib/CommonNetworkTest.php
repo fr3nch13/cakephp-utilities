@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Fr3nch13\Utilities\Test\TestCase\Lib;
 
 use Cake\TestSuite\TestCase;
-use Cake\View\View;
 use Fr3nch13\Utilities\Lib\CommonNetwork;
 
 class CommonNetworkTest extends TestCase

@@ -283,6 +283,8 @@ class CommonNetwork
         if ($ip) {
             return strval($ip);
         }
+
+        return null;
     }
 
     /**

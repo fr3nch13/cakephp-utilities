@@ -7,11 +7,8 @@ declare(strict_types=1);
 
 namespace Fr3nch13\Utilities;
 
-use Cake\Cache\Cache;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
-use Cake\Routing\Route\DashedRoute;
-use Cake\Routing\RouteBuilder;
 
 /**
  * Plugin Definitions

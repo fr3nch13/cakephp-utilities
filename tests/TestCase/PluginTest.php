@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace Fr3nch13\Utilities\Test\TestCase;
 
 use Cake\Core\Configure;
-use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 

@@ -11,8 +11,6 @@ permissions:
 jobs:
   coding-standard:
     runs-on: ubuntu-22.04
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
@@ -29,6 +27,8 @@ jobs:
         php-version: ${{ matrix.php-version }}
         extensions: mbstring, intl
         coverage: none
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Composer install
       run: composer install
@@ -38,8 +38,6 @@ jobs:
 
   static-analysis:
     runs-on: ubuntu-22.04
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
@@ -56,6 +54,8 @@ jobs:
         php-version: ${{ matrix.php-version }}
         extensions: mbstring, intl
         coverage: xdebug
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Composer install
       run: composer install
@@ -65,8 +65,6 @@ jobs:
 
   test:
     runs-on: ubuntu-22.04
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
@@ -83,6 +81,8 @@ jobs:
         php-version: ${{ matrix.php-version }}
         extensions: mbstring, intl
         coverage: none
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Composer install
       run: composer install
@@ -92,8 +92,6 @@ jobs:
 
   coverage-php:
     runs-on: ubuntu-22.04
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
@@ -110,6 +108,8 @@ jobs:
         php-version: ${{ matrix.php-version }}
         extensions: mbstring, intl
         coverage: pcov
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Composer install
       run: composer install

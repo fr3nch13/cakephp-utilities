@@ -60,7 +60,7 @@ class VersionsHelperTest extends TestCase
     {
         $results = $this->Versions->runGit(['branch']);
         if (count($results) == 1) {
-            $this->assertMatchesRegularExpression('/^\*\s+\(HEAD\s+detached\s+at\s+[a-z0-9\/]+\)$/i', $results[0]);
+            $this->assertMatchesRegularExpression('/^\*\s+\(main|master|HEAD\s+detached\s+at\s+[a-z0-9\/]+\)$/i', $results[0]);
         } else {
             $result = '';
             foreach ($results as $i => $line) {

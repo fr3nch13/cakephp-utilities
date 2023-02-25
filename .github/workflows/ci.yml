@@ -68,6 +68,8 @@ jobs:
       matrix:
         php-version: ['7.4', '8.0', '8.1', '8.2', 'latest']
     name: Test - PHP - ${{ matrix.php-version }}
+    env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
     - uses: actions/checkout@v3

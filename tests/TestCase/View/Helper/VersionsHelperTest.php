@@ -88,7 +88,8 @@ class VersionsHelperTest extends TestCase
         // dev-(1\.x-dev|master|\w+) - Testing on an actual branch, or head
         // [\d\.-]+\-[a-z0-9]+ - Testing on a Merge Request
         // [\d\.-]+ - Testing when a tag is created.
-        $this->assertMatchesRegularExpression('/^(dev-(1\.x-dev|2\.x-dev|master|[\w\-]+)|[\d\.-]+\-[a-z0-9]+|[\d\.-]+)$/i', $result);
+        // dev-(HEAD detached at pull/1/merge)
+        $this->assertMatchesRegularExpression('/^(dev-(1\.x-dev|2\.x-dev|master|[\w\-\/\s+]+)|[\d\.-]+\-[a-z0-9]+|[\d\.-]+)$/i', $result);
     }
 
     public function testGetPackages(): void

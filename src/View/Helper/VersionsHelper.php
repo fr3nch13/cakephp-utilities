@@ -218,7 +218,13 @@ class VersionsHelper extends Helper
         }
         debug($result_code);
         if ($result_code) {
-            throw new \Exception(__('Command failed: `{0}` Code:`{1}` Output:`{2}`', [
+            $msg = json_encode([
+                'message' => 'Command failed',
+                'cmd' => '{0}',
+                'code' => '{1}',
+                'output' => '{2}',
+            ]);
+            throw new \Exception(__($msg, [
                 $cmd,
                 $result_code,
                 implode("\n", $output),

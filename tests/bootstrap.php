@@ -15,7 +15,11 @@ use Cake\Core\Configure;
 define('TESTS', __DIR__ . DS);
 
 $dotenv = new \Symfony\Component\Dotenv\Dotenv();
-$dotenv->load(TESTS . '.env');
+if (is_file(TESTS . '.env.test')) {
+    $dotenv->load(TESTS . '.env');
+} elseif (is_file(TESTS . '.env.test')) {
+    $dotenv->load(TESTS . '.env.test');
+}
 
 Configure::write('Tests.Plugins', [
     'Fr3nch13/Utilities',

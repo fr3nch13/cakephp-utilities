@@ -13,15 +13,9 @@
     ],
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/fr3nch13/ComposerLockParser.git"
-        }
-    ],
     "require": {
         "cakephp/cakephp": "~4.4.8",
-        "t4web/composer-lock-parser": "dev-updates"
+        "fr3nch13/composer-lock-parser": "~1.0"
     },
     "require-dev": {
         "fr3nch13/cakephp-pta": "dev-2.x-dev"

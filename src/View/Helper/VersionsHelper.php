@@ -142,7 +142,7 @@ class VersionsHelper extends Helper
     /**
      * Gets info on a particular package
      *
-     * @param string $name The full name of the composer page ex: sis-plugins/core
+     * @param string $name The full name of the composer package ex: fr3nch13/utilities
      * @return object the object that has the info of that package
      * @throws \Exception throws an exception if the package info can't be found.
      * @TODO Use more specific exceptions

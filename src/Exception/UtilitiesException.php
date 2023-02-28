@@ -14,7 +14,7 @@ use Cake\Core\Exception\CakeException;
  *
  * Throw when a config file is missing.
  */
-class UtilitieException extends CakeException
+class UtilitiesException extends CakeException
 {
     /**
      * Default exception code

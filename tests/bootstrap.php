@@ -14,19 +14,23 @@ use Cake\Core\Configure;
 // Configure your stuff here for the plugin_bootstrap.php below.
 define('TESTS', __DIR__ . DS);
 
-$dotenv = new \Symfony\Component\Dotenv\Dotenv();
-if (is_file(TESTS . '.env')) {
-    $dotenv->load(TESTS . '.env');
-} elseif (is_file(TESTS . '.env.test')) {
-    $dotenv->load(TESTS . '.env.test');
-}
+Configure::write('Tests.DbConfig', [
+    'className' => \Cake\Database\Connection::class,
+    'driver' => \Cake\Database\Driver\Sqlite::class,
+    'database' => ':memory:',
+]);
 
 Configure::write('Tests.Plugins', [
     'Fr3nch13/Utilities',
 ]);
 
 Configure::write('Tests.Helpers', [
+    'Colors' => ['className' => 'Fr3nch13/Utilities.Colors'],
     'Versions' => ['className' => 'Fr3nch13/Utilities.Versions'],
+]);
+
+Configure::write('Tests.Migrations', [
+    ['plugin' => 'Fr3nch13/Utilities'],
 ]);
 
 ////// Ensure we can setup an environment for the Test Application instance.

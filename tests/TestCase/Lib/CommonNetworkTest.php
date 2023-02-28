@@ -121,7 +121,7 @@ class CommonNetworkTest extends TestCase
         ], $this->CN->netmaskToArray('10.10.10.0', '255.255.255.255'));
     }
 
-    public function testNLong2ip(): void
+    public function testLong2ip(): void
     {
         $this->assertSame('10.10.10.0', $this->CN->long2ip(168430080));
         $this->assertNull($this->CN->long2ip('10.10.10.10'));

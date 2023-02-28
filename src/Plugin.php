@@ -30,7 +30,8 @@ class Plugin extends BasePlugin
             ]);
         }
 
-        // By default will load `config/bootstrap.php` in the plugin.
+        $app->addPlugin('Migrations'); // mainly used for testing.
+
         parent::bootstrap($app);
     }
 }

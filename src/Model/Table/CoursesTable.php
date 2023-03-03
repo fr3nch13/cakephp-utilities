@@ -29,9 +29,18 @@ use Cake\ORM\Query;
  */
 final class CoursesTable extends \Cake\ORM\Table
 {
+    /**
+     * Not used here or in unit testing,
+     * but here for phpstan to have multiple viewpoints
+     * for analyzing the traits.
+     */
+    use MergeDeleteTrait;
+
+    /**
+     * Actually tested in the unit tests.
+     */
     use ApplySettingsTrait;
     use CheckAddTrait;
-    use MergeDeleteTrait;
     use ToggleTrait;
 
     /**
@@ -53,7 +62,7 @@ final class CoursesTable extends \Cake\ORM\Table
             ->setProperty('teachers_pet')
             ->setForeignKey('teachers_pet_id')
             ->setClassName('Fr3nch13/Utilities.Students')
-            ->setDependent(true);
+            ->setDependent(false);
 
         $this->addBehavior('Fr3nch13/Utilities.Memory');
         $this->addBehavior('Fr3nch13/Utilities.Sluggable');

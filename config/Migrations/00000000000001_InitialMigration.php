@@ -39,6 +39,7 @@ final class InitialMigration extends AbstractMigration
         $table->addColumn('name', 'string', ['length' => '255'])
             ->addColumn('slug', 'string', ['length' => '255', 'null' => true])
             ->addColumn('updateme', 'string', ['length' => '255', 'null' => true])
+            ->addColumn('alive', 'boolean', ['default' => 1])
             ->create();
 
         $table = $this->table('courses_students');

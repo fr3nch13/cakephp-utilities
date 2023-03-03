@@ -26,10 +26,19 @@ namespace Fr3nch13\Utilities\Model\Table;
  */
 final class StudentsTable extends \Cake\ORM\Table
 {
+    /**
+     * Not used here or in unit testing,
+     * but here for phpstan to have multiple viewpoints
+     * for analyzing the traits.
+     */
     use ApplySettingsTrait;
+    use ToggleTrait;
+
+    /**
+     * Actually tested in the unit tests.
+     */
     use CheckAddTrait;
     use MergeDeleteTrait;
-    use ToggleTrait;
 
     /**
      * Initialize method

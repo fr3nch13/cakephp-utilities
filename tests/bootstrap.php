@@ -25,7 +25,7 @@ Configure::write('Tests.Plugins', [
 ]);
 
 Configure::write('Tests.Helpers', [
-    'Colors' => ['className' => 'Fr3nch13/Utilities.Colors'],
+    'Color' => ['className' => 'Fr3nch13/Utilities.Color'],
     'Versions' => ['className' => 'Fr3nch13/Utilities.Versions'],
 ]);
 

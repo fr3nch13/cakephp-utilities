@@ -19,11 +19,6 @@ namespace Fr3nch13\Utilities\Model\Table;
  */
 final class CoursesStudentsTable extends \Cake\ORM\Table
 {
-    use ApplySettingsTrait;
-    use CheckAddTrait;
-    use MergeDeleteTrait;
-    use ToggleTrait;
-
     /**
      * Initialize method
      *

@@ -16,9 +16,9 @@ final class CoursesFixture extends \Cake\TestSuite\Fixture\TestFixture
         $this->table = 'courses';
 
         $this->records = [
-            ['id' => 1, 'name' => 'Potions', 'available' => 1],
-            ['id' => 2, 'name' => 'Defence Against the Dark Arts', 'available' => 1],
-            ['id' => 3, 'name' => 'Charms', 'available' => 1],
+            ['id' => 1, 'name' => 'Potions', 'name_other' => 'PTNS', 'available' => 1],
+            ['id' => 2, 'name' => 'Defence Against the Dark Arts', 'name_other' => 'DADA', 'available' => 1],
+            ['id' => 3, 'name' => 'Charms', 'name_other' => 'CHMS', 'available' => 1],
         ];
 
         parent::init();

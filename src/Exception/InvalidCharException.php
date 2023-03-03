@@ -12,6 +12,6 @@ namespace Fr3nch13\Utilities\Exception;
  *
  * Throw when a character is invalid.
  */
-class InvalidCharException extends UtilitieException
+class InvalidCharException extends UtilitiesException
 {
 }

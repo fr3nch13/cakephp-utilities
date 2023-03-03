@@ -36,6 +36,10 @@ trait MergeDeleteTrait
         /** @property \Cake\Datasource\EntityInterface $sourceRecord */
         $sourceRecord = $this->get($sourceId, ['contain' => $contain]);
 
+        // ensure the new record actually exists.
+        /** @property \Cake\Datasource\EntityInterface $targetRecord */
+        $targetRecord = $this->get($targetId, ['contain' => $contain]);
+
         /** @var \Cake\ORM\Association\BelongsToMany $belongsToManyObj */
         foreach ($BelongsToMany as $belongsToManyObj) {
             $underscore = Inflector::underscore($belongsToManyObj->getAlias());

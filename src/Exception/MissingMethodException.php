@@ -12,7 +12,7 @@ namespace Fr3nch13\Utilities\Exception;
  *
  * Throw when a character is invalid.
  */
-class MissingMethodException extends UtilitieException
+class MissingMethodException extends UtilitiesException
 {
     /**
      * Template string that has attributes sprintf()'ed into it.

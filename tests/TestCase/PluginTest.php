@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Fr3nch13\Utilities\Test\TestCase;
 
 use Cake\Core\Configure;
+use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 
@@ -55,5 +56,17 @@ class PluginTest extends TestCase
         $plugins = $app->getPlugins();
         // make sure it was able to read and store the config.
         $this->assertEquals(Configure::read('Utilities.test'), 'TEST');
+    }
+
+    /**
+     * testRoutes
+     *
+     * @return void
+     */
+    public function testRoutes(): void
+    {
+        $this->loadPlugins(['Fr3nch13/Utilities' => []]);
+        $url = Router::url(['plugin' => 'Fr3nch13/Utilities', 'controller' => 'Courses']);
+        $this->assertEquals($url, '/fr3nch13u/courses');
     }
 }

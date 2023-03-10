@@ -16,3 +16,6 @@
 /composer.lock
 
 /.vscode
+/docs
+/.phpdoc
+phpDocumentor.phar

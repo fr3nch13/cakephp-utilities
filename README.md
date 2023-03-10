@@ -14,3 +14,5 @@ The recommended way to install composer packages is:
 ```bash
 composer require fr3nch13/cakephp-utilities
 ```
+## Documentation
+[PHP Doc](https://fr3nch13.github.io/cakephp-utilities/)

@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * ColorWidget
+ * Color Widget
+ *
+ * Renders the html color widget on the frontend.
  */
 
 namespace Fr3nch13\Utilities\View\Widget;

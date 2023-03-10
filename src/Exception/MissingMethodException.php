@@ -2,15 +2,15 @@
 declare(strict_types=1);
 
 /**
- * InvalidCharException
+ * Missing Method Exception
  */
 
 namespace Fr3nch13\Utilities\Exception;
 
 /**
- * Invalid Character Exception
- *
- * Throw when a character is invalid.
+ * Throws when a method is missing.
+ * This is used in Traits when they're included in a Class
+ * that doesn't have a method that the trit is expecting.
  */
 class MissingMethodException extends UtilitiesException
 {

@@ -1,11 +1,25 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * Progress Info Helper
+ *
+ * Console helper to show a progress bar.
+ */
+
 namespace Fr3nch13\Utilities\Shell\Helper;
 
 use Cake\Shell\Helper\ProgressHelper;
 use Fr3nch13\Utilities\Exception\InvalidCharException;
 
+/**
+ * Progress Info Helper
+ *
+ * Console helper to show a progress bar.
+ *
+ * Based on CakePHP's Progress Helper. It allows you to add additional information
+ * to the end of the progress bar.
+ */
 class ProgressinfoHelper extends ProgressHelper
 {
     /**

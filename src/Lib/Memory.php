@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * MemoryBehavior
+ * Memory Library
+ *
+ * Tracks Memory and time usage, mainly for cron jobs.
  */
 
 namespace Fr3nch13\Utilities\Lib;

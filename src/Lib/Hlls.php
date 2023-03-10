@@ -2,6 +2,8 @@
 declare(strict_types=1);
 
 /**
+ * Hlls Library
+ *
  * hue, lightness, luminosity, and saturation object for colors
  */
 

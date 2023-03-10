@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * ColorHelper
+ * Color Helper
+ *
+ * Used to conver colors to different formats, and determine things like hue, lightness, etc.
  */
 
 namespace Fr3nch13\Utilities\View\Helper;

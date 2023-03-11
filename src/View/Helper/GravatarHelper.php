@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 /**
- * Based on:
+ * Gravatar Helper
  *
- * Gravatar Helper (https://github.com/PotatoPowered/gravatar-helper)
+ * A helper that provides gravatar images for profile use in CakePHP.
  */
 
 namespace Fr3nch13\Utilities\View\Helper;
@@ -12,9 +12,11 @@ namespace Fr3nch13\Utilities\View\Helper;
 use Cake\View\Helper;
 
 /**
- * Class GravatarHelper
+ * Gravatar Helper
  *
- * A helper that provides gravatar images for profile use in CakePHP
+ * A helper that provides gravatar images for profile use in CakePHP.
+ *
+ * Based on: Gravatar Helper (https://github.com/PotatoPowered/gravatar-helper)
  */
 class GravatarHelper extends Helper
 {

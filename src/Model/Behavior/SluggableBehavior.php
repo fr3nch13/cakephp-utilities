@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * SluggableBehavior
+ * Sluggable Behavior
+ *
+ * Creates slugs for records that don't have a uniue id.
  */
 
 namespace Fr3nch13\Utilities\Model\Behavior;
@@ -11,9 +13,8 @@ use Cake\ORM\Behavior;
 use Cake\Utility\Text;
 
 /**
- * Sluggable Behavior
- *
- * Creates slugs for database objects/records that have the required fields.
+ * Used mainly for when you're importing data from an external source like
+ * an excel file, csv file, etc. where each record doesn't have an explicit unique id.
  */
 class SluggableBehavior extends Behavior
 {

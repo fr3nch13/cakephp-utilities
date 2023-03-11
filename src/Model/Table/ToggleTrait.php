@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * ToggleTrait
+ * Toggle Trait
+ *
+ * Common methods for toggling boolean fields in the database.
  */
 
 namespace Fr3nch13\Utilities\Model\Table;

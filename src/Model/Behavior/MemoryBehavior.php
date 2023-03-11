@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * MemoryBehavior
+ * Memory Behavior
+ *
+ * Basically a wrapper for the Mimory Library for the Model/Tables to use.
  */
 
 namespace Fr3nch13\Utilities\Model\Behavior;
@@ -11,11 +13,7 @@ use Cake\ORM\Behavior;
 use Fr3nch13\Utilities\Lib\Memory;
 
 /**
- * Memory Behavior
- *
- * Tracks Memory and time usage, mainly for cron jobs.
- * This is just a wrapper around the Lib\Memory class.
- * This may not even be needed.
+ * Basically a wrapper for the Mimory Library for the Model/Tables to use.
  */
 class MemoryBehavior extends Behavior
 {

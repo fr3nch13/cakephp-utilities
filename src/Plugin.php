@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * Plugin Definitions
+ * CakePHP Utilities Plugin
+ *
+ * The main entrypoint of this plugin.
  */
 
 namespace Fr3nch13\Utilities;
@@ -13,7 +15,9 @@ use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\RouteBuilder;
 
 /**
- * Plugin Definitions
+ * CakePHP Utilities Plugin
+ *
+ * The main entrypoint of this plugin.
  */
 class Plugin extends BasePlugin
 {

@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * VersionsHelper
+ * Versions Helper
+ *
+ * Helper to read the versions of vendors/plugins for the parent app.
  */
 
 namespace Fr3nch13\Utilities\View\Helper;
@@ -16,6 +18,9 @@ use ComposerLockParser\PackagesCollection;
  * Versions Helper
  *
  * Helper to read the versions of vendors/plugins for the parent app.
+ *
+ * Uses the Composer Lock Parser to get detailed version onformation from the composer.lock file.
+ * It also uses git to try to determine the version of the application itself.
  *
  * @property \Cake\View\Helper\UrlHelper $Url
  * @property \Cake\View\Helper\HtmlHelper $Html

@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * CheckAddTrait
+ * Check/Add Trait
+ *
+ * Common methods checking if a record exists, and adds the object if it doesn't.
  */
 
 namespace Fr3nch13\Utilities\Model\Table;
@@ -10,8 +12,6 @@ namespace Fr3nch13\Utilities\Model\Table;
 use Fr3nch13\Utilities\Exception\MissingMethodException;
 
 /**
- * Check/Add Trait
- *
  * Common methods checking if a record exists, and adds the object if it doesn't.
  *
  * @mixin \Fr3nch13\Utilities\Model\Behavior\SluggableBehavior

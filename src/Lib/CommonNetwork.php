@@ -2,14 +2,14 @@
 declare(strict_types=1);
 
 /**
- * CommonNetwork
+ * Common Network Library
+ *
+ * Holds common functions needed for translating different ipv4 stuff.
  */
 
 namespace Fr3nch13\Utilities\Lib;
 
 /**
- * Common Network Utility
- *
  * Holds common functions needed for translating different ipv4 stuff.
  *
  * @TODO Add the ability to calculate ipv6, for now, just return null/false/empty strings.

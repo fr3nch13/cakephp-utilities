@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * ChangeSettingsTrait
+ * Apply Settings Trait
+ *
+ * Adds the ability to batch change multiple fields.
  */
 
 namespace Fr3nch13\Utilities\Model\Table;
@@ -10,9 +12,6 @@ namespace Fr3nch13\Utilities\Model\Table;
 use Cake\Database\Expression\QueryExpression;
 
 /**
- * Apply Settings Trait
- *
- * Adds the ability to batch change multiple fields.
  * Be careful using this as it can easily abused since it doesn't do any complex data validation.
  */
 trait ApplySettingsTrait

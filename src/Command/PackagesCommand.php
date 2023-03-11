@@ -18,6 +18,8 @@ use Fr3nch13\Utilities\View\Helper\VersionsHelper;
 
 /**
  * Packages Command
+ *
+ * Lists out the package info from the composer.lock file, and git.
  */
 class PackagesCommand extends Command
 {

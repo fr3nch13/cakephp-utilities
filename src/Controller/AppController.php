@@ -2,7 +2,10 @@
 declare(strict_types=1);
 
 /**
- * AppController
+ * App Controller
+ *
+ * The base controller for the controllers in this plugin.
+ * The controllers here are fro unit testing.
  */
 
 namespace Fr3nch13\Utilities\Controller;

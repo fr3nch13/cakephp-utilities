@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * CoursesController
+ * Courses Controller
+ *
+ * Used to test the Controller Traits.
  */
 
 namespace Fr3nch13\Utilities\Controller;
@@ -11,8 +13,6 @@ use Cake\Core\Configure;
 
 /**
  * Courses Controller
- *
- *  Used to test the Controller Toggle Trait.
  *
  * @property \Cake\Controller\Component\RequestHandlerComponent $RequestHandler
  * @property \Fr3nch13\Utilities\Model\Table\CoursesTable $Courses

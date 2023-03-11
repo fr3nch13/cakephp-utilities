@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * FuModelFindTrait
+ * Fu Model Find Trait
+ *
+ * Used by the Controller Traits to find the Model to use.
  */
 
 namespace Fr3nch13\Utilities\Controller;
@@ -10,6 +12,11 @@ namespace Fr3nch13\Utilities\Controller;
 use Cake\Core\Configure;
 use Cake\Http\Exception\NotFoundException;
 
+/**
+ * Fu Model Find Trait
+ *
+ * Used by the Controller Traits to find the Model to use.
+ */
 trait FuModelFindTrait
 {
     /**

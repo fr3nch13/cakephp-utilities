@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * MergeDeleteTrait
+ * Toggle Trait
+ *
+ * Common methods for toggling boolean fields in the database.
  */
 
 namespace Fr3nch13\Utilities\Controller;
@@ -11,7 +13,7 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\Utility\Inflector;
 
 /**
- * Merge/Delete Trait
+ * Toggle Trait
  *
  * Common methods for toggling boolean fields in the database.
  */

@@ -2,7 +2,9 @@
 declare(strict_types=1);
 
 /**
- * MergeDeleteTrait
+ * Merge/Delete Trait
+ *
+ * Common methods merging one record into another, then deleting the first record.
  */
 
 namespace Fr3nch13\Utilities\Controller;

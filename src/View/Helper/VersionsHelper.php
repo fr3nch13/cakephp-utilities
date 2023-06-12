@@ -83,7 +83,9 @@ class VersionsHelper extends Helper
                 throw new \Exception(__('Unable to find the `git` command.'));
             }
         }
-        $rootDir = getenv('LOCK_DIR') ? getenv('LOCK_DIR') : getenv('ROOT');
+        // use an environment vairable if set like in config/.env
+        // otherwise use the constant ROOT from the source application
+        $rootDir = getenv('LOCK_DIR') ? getenv('LOCK_DIR') : (getenv('ROOT')?:ROOT);
         if (isset($config['rootDir'])) {
             $rootDir = $config['rootDir'];
         }

@@ -259,7 +259,6 @@ class VersionsHelper extends Helper
      * @param array<string> $args List of arguments to pass to the git command
      * @return array<int, string> The result of the git command
      * @throws \Fr3nch13\Utilities\Exception\UtilitiesException if the git command fails.
-     * @TODO Use more specific exceptions
      */
     public function runGit(array $args = []): array
     {
@@ -269,7 +268,9 @@ class VersionsHelper extends Helper
         try {
             exec($cmd, $output, $result_code);
         } catch (\Throwable $e) {
-            throw new UtilitiesException(__('Unable to find the `which` command.'));
+            throw new UtilitiesException(__('Unable to run the command: {0}', [
+                $cmd,
+            ]));
         }
         if ($result_code) {
             /** @var string $msg */

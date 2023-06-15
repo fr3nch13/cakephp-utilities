@@ -56,6 +56,11 @@ class VersionsHelper extends Helper
     protected $gitCmd = null;
 
     /**
+     * The root of the application
+     */
+    protected $this->rootDir = '';
+
+    /**
      * Initialize the helper
      *
      * @param \Cake\View\View $View The view object
@@ -85,11 +90,11 @@ class VersionsHelper extends Helper
         }
         // use an environment vairable if set like in config/.env
         // otherwise use the constant ROOT from the source application
-        $rootDir = getenv('LOCK_DIR') ? getenv('LOCK_DIR') : (getenv('ROOT') ?: ROOT);
+        $this->rootDir = getenv('LOCK_DIR') ? getenv('LOCK_DIR') : (getenv('ROOT') ?: ROOT);
         if (isset($config['rootDir'])) {
-            $rootDir = $config['rootDir'];
+            $this->rootDir = $config['rootDir'];
         }
-        $this->composerPath = $rootDir . DS . 'composer.lock';
+        $this->composerPath = $this->rootDir . DS . 'composer.lock';
         if (isset($config['composerPath'])) {
             $this->composerPath = $config['composerPath'];
         }
@@ -219,7 +224,8 @@ class VersionsHelper extends Helper
      */
     public function runGit(array $args = []): array
     {
-        $cmd = $this->gitCmd . ' ' . implode(' ', $args);
+        $cmd = 'cd ' . $this->roodDir . '; ';
+        $cmd .= $this->gitCmd . ' ' . implode(' ', $args);
         $output = [];
         try {
             exec($cmd, $output, $result_code);

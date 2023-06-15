@@ -13,6 +13,7 @@ use Cake\View\Helper;
 use Cake\View\View;
 use ComposerLockParser\ComposerInfo;
 use ComposerLockParser\PackagesCollection;
+use Fr3nch13\Utilities\Exception\UtilitiesException;
 
 /**
  * Versions Helper
@@ -56,7 +57,7 @@ class VersionsHelper extends Helper
     protected $gitCmd = null;
 
     /**
-     * The root of the application
+     * The root directory of the application
      */
     protected $rootDir = '';
 
@@ -66,8 +67,7 @@ class VersionsHelper extends Helper
      * @param \Cake\View\View $View The view object
      * @param array<string, mixed> $config Helper config settings
      * @return void
-     * @throws \Exception when we can't find some of the commands.
-     * @TODO Use more specific exceptions
+     * @throws UtilitiesException when we can't find some of the commands.
      */
     public function __construct(View $View, array $config = [])
     {
@@ -80,27 +80,28 @@ class VersionsHelper extends Helper
             try {
                 exec('which git', $output);
             } catch (\Throwable $e) {
-                throw new \Exception(__('Unable to find the `which` command.'));
+                throw new UtilitiesException(__('Unable to find the `which` command.'));
             }
             if (isset($output[0])) {
                 $this->gitCmd = $output[0];
             } else {
-                throw new \Exception(__('Unable to find the `git` command.'));
+                throw new UtilitiesException(__('Unable to find the `git` command.'));
             }
         }
         // use an environment vairable if set like in config/.env
         // otherwise use the constant ROOT from the source application
-        $this->rootDir = getenv('LOCK_DIR') ? getenv('LOCK_DIR') : (getenv('ROOT') ?: ROOT);
+        $this->rootDir = getenv('LOCK_DIR') ?: (getenv('ROOT') ?: ROOT);
         if (isset($config['rootDir'])) {
             $this->rootDir = $config['rootDir'];
         }
-        $this->composerPath = $this->rootDir . DS . 'composer.lock';
+
+        $this->composerPath = $this->getRootDir() . DS . 'composer.lock';
         if (isset($config['composerPath'])) {
             $this->composerPath = $config['composerPath'];
         }
 
         if (!is_file($this->composerPath)) {
-            throw new \Exception(__('Unable to find the composer.lock file at: {0}', [
+            throw new UtilitiesException(__('Unable to find the composer.lock file at: {0}', [
                 $this->composerPath,
             ]));
         }
@@ -108,8 +109,9 @@ class VersionsHelper extends Helper
             $this->ComposerInfo = new ComposerInfo($this->composerPath);
             $this->ComposerInfo->getPackages();
         } catch (\Throwable $e) {
-            throw new \Exception(__('Unable to parse the composer.lock file at: {0}', [
+            throw new UtilitiesException(__('Unable to parse the composer.lock file at: {0} Msg: {1}', [
                 $this->composerPath,
+                $e->getMessage(),
             ]));
         }
     }
@@ -144,7 +146,8 @@ class VersionsHelper extends Helper
                 if (isset($results[0])) {
                     $out = $results[0];
                 }
-            } catch (\Exception $e) {
+            } catch (UtilitiesException $e) {
+                // Don't throw an exception, just return the output of the command.
             }
         }
 
@@ -156,7 +159,7 @@ class VersionsHelper extends Helper
      *
      * @param string $name The full name of the composer package ex: fr3nch13/utilities
      * @return object the object that has the info of that package
-     * @throws \Exception throws an exception if the package info can't be found.
+     * @throws UtilitiesException throws an exception if the package info can't be found.
      * @TODO Use more specific exceptions
      */
     public function package(string $name): object
@@ -164,7 +167,7 @@ class VersionsHelper extends Helper
         try {
             return $this->ComposerInfo->getPackages()->getByName($name);
         } catch (\Throwable $e) {
-            throw new \Exception(__('Unable to find info on {0}.', [
+            throw new UtilitiesException(__('Unable to find info on {0}.', [
                 $name,
             ]));
         }
@@ -215,22 +218,56 @@ class VersionsHelper extends Helper
     }
 
     /**
+     * Gets the root path of the application.
+     *
+     * @return string The path to the root folder
+     * @throws UtilitiesException If we can't find cakephp as this means nothing is installed yet.
+     */
+    public function getRootDir(): string
+    {
+        // it's already bee set, so just return the defined path
+        if ($this->rootDir)
+        {
+            return $this->rootDir;
+        }
+
+        $findRoot = function ($root) {
+            if (is_dir($root . '/vendor/cakephp/cakephp')) {
+                return $root;
+            }
+            do {
+                $lastRoot = $root;
+                $root = dirname($root);
+                if (is_dir($root . '/vendor/cakephp/cakephp')) {
+                    return $root;
+                }
+            } while ($root !== $lastRoot);
+            throw new UtilitiesException(
+                "Cannot find the root of the application, unable to run tests"
+            );
+        };
+
+        $this->rootDir = $findRoot(getcwd());
+        return $this->rootDir;
+    }
+
+    /**
      * Runs the git command with the args
      *
      * @param array<string> $args List of arguments to pass to the git command
      * @return array<int, string> The result of the git command
-     * @throws \Exception if the git command fails.
+     * @throws UtilitiesException if the git command fails.
      * @TODO Use more specific exceptions
      */
     public function runGit(array $args = []): array
     {
-        $cmd = 'cd ' . $this->roodDir . '; ';
+        $cmd = 'cd ' . $this->getRootDir() . '; ';
         $cmd .= $this->gitCmd . ' ' . implode(' ', $args);
         $output = [];
         try {
             exec($cmd, $output, $result_code);
         } catch (\Throwable $e) {
-            throw new \Exception(__('Unable to find the `which` command.'));
+            throw new UtilitiesException(__('Unable to find the `which` command.'));
         }
         if ($result_code) {
             /** @var string $msg */
@@ -240,7 +277,7 @@ class VersionsHelper extends Helper
                 'code' => '{1}',
                 'output' => '{2}',
             ]);
-            throw new \Exception(__($msg, [
+            throw new UtilitiesException(__($msg, [
                 $cmd,
                 $result_code,
                 implode("\n", $output),

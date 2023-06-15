@@ -69,7 +69,7 @@ class VersionsHelper extends Helper
      * @param \Cake\View\View $View The view object
      * @param array<string, mixed> $config Helper config settings
      * @return void
-     * @throws UtilitiesException when we can't find some of the commands.
+     * @throws \Fr3nch13\Utilities\Exception\UtilitiesException when we can't find some of the commands.
      */
     public function __construct(View $View, array $config = [])
     {
@@ -161,7 +161,7 @@ class VersionsHelper extends Helper
      *
      * @param string $name The full name of the composer package ex: fr3nch13/utilities
      * @return object the object that has the info of that package
-     * @throws UtilitiesException throws an exception if the package info can't be found.
+     * @throws \Fr3nch13\Utilities\Exception\UtilitiesException throws an exception if the package info can't be found.
      * @TODO Use more specific exceptions
      */
     public function package(string $name): object
@@ -223,13 +223,12 @@ class VersionsHelper extends Helper
      * Gets the root path of the application.
      *
      * @return string The path to the root folder
-     * @throws UtilitiesException If we can't find cakephp as this means nothing is installed yet.
+     * @throws \Fr3nch13\Utilities\Exception\UtilitiesException If we can't find cakephp as this means nothing is installed yet.
      */
     public function getRootDir(): string
     {
         // it's already bee set, so just return the defined path
-        if ($this->rootDir)
-        {
+        if ($this->rootDir) {
             return $this->rootDir;
         }
 
@@ -245,11 +244,12 @@ class VersionsHelper extends Helper
                 }
             } while ($root !== $lastRoot);
             throw new UtilitiesException(
-                "Cannot find the root of the application, unable to run tests"
+                'Cannot find the root of the application, unable to run tests'
             );
         };
 
         $this->rootDir = $findRoot(getcwd());
+
         return $this->rootDir;
     }
 
@@ -258,7 +258,7 @@ class VersionsHelper extends Helper
      *
      * @param array<string> $args List of arguments to pass to the git command
      * @return array<int, string> The result of the git command
-     * @throws UtilitiesException if the git command fails.
+     * @throws \Fr3nch13\Utilities\Exception\UtilitiesException if the git command fails.
      * @TODO Use more specific exceptions
      */
     public function runGit(array $args = []): array

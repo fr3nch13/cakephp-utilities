@@ -58,7 +58,7 @@ class VersionsHelper extends Helper
     /**
      * The root of the application
      */
-    protected $this->rootDir = '';
+    protected $rootDir = '';
 
     /**
      * Initialize the helper

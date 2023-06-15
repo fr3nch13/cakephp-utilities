@@ -58,6 +58,8 @@ class VersionsHelper extends Helper
 
     /**
      * The root directory of the application
+     *
+     * @var string
      */
     protected $rootDir = '';
 

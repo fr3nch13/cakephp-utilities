@@ -90,7 +90,7 @@ class VersionsHelperTest extends TestCase
         // [\d\.-]+ - Testing when a tag is created.
         // dev-(HEAD detached at pull/1/merge)
         $this->assertMatchesRegularExpression('/^(dev-(1\.x-dev|2\.x-dev|master|[\w\-\/\s+]+)|[\d\.-]+\-[a-z0-9]+|[\d\.-]+)$/i', $result);
-        $this->assertStringContainsString('fr3nch13/cakephp-utilities/tests/assets', $this->Versions->getRootDir());
+        $this->assertStringContainsString('cakephp-utilities/tests/assets', $this->Versions->getRootDir());
     }
 
     public function testGetPackages(): void

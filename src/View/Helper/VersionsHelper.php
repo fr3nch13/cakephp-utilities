@@ -279,7 +279,7 @@ class VersionsHelper extends Helper
         if (!$this->rootDir) {
             $path = realpath(getcwd() ?: '.');
             if ($path) {
-                $this->rootDir = realpath(getcwd() ?: '.');
+                $this->rootDir = $path;
             }
         }
 

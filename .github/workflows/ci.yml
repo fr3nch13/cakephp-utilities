@@ -35,7 +35,7 @@ jobs:
     - name: Composer install
       run: |
         composer config github-oauth.github.com ${{ secrets.ACTIONS_TOKEN }}
-        composer install
+        composer update
 
     - name: Run PHP CodeSniffer
       run: composer run-script cs-checkstyle | vendor/bin/cs2pr
@@ -64,7 +64,7 @@ jobs:
     - name: Composer install
       run: |
         composer config github-oauth.github.com ${{ secrets.ACTIONS_TOKEN }}
-        composer install
+        composer update
 
     - name: Run PHP Analyzer
       run: composer run-script phpstan
@@ -93,7 +93,7 @@ jobs:
     - name: Composer install
       run: |
         composer config github-oauth.github.com ${{ secrets.ACTIONS_TOKEN }}
-        composer install
+        composer update
 
     - name: Run PHPUnit
       run: composer run-script test
@@ -122,7 +122,7 @@ jobs:
     - name: Composer install
       run: |
         composer config github-oauth.github.com ${{ secrets.ACTIONS_TOKEN }}
-        composer install
+        composer update
 
     - name: Run PHPUnit
       run:  composer run-script coverage-clover

@@ -5,6 +5,7 @@ namespace Fr3nch13\Utilities\Test\TestCase\View\Helper;
 
 use Cake\TestSuite\TestCase;
 use Cake\View\View;
+use Fr3nch13\Utilities\Exception\UtilitiesException;
 use Fr3nch13\Utilities\View\Helper\VersionsHelper;
 
 class VersionsHelperTest extends TestCase
@@ -39,20 +40,58 @@ class VersionsHelperTest extends TestCase
         parent::tearDown();
     }
 
+    public function testConstructorNoWhich(): void
+    {
+        $this->expectException(UtilitiesException::class);
+        $this->expectExceptionMessage('Unable to find the `git` command.');
+        $this->expectExceptionCode(404);
+        $mock = $this->getMockBuilder(VersionsHelper::class)
+            ->setConstructorArgs([$this->View])
+            ->onlyMethods(['exec'])
+            ->getMock();
+        $mock->expects($this->once())
+            ->method('exec')
+            ->willReturnCallback(
+                function ($command, &$output, &$return_var) {
+                    $this->assertEquals('which git', $command);
+                    $output = ['failure'];
+                    $return_var = 1;
+
+                    return false;
+                }
+            );
+        new VersionsHelper($this->View);
+    }
+
     public function testConstructorBadPath(): void
     {
-        $this->expectException(\Exception::class);
-        $versions = new VersionsHelper($this->View, [
+        $this->expectException(UtilitiesException::class);
+        $this->expectExceptionMessage('Cannot find the root of the application, unable to get versions.');
+        $this->expectExceptionCode(404);
+        new VersionsHelper($this->View, [
             'rootDir' => '/',
         ]);
     }
 
     public function testConstructorBadLockFile(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(UtilitiesException::class);
+        $this->expectExceptionMessage('Unable to parse the composer.lock');
+        $this->expectExceptionCode(500);
         $config = ['rootDir' => dirname(dirname(dirname(__DIR__))) . DS . 'assets'];
-        $versions = new VersionsHelper($this->View, [
+        new VersionsHelper($this->View, [
             'composerPath' => $config['rootDir'] . DS . 'composer_bad.lock',
+        ]);
+    }
+
+    public function testConstructorMissingLockFile(): void
+    {
+        $this->expectException(UtilitiesException::class);
+        $this->expectExceptionMessage('Unable to find the composer.lock');
+        $this->expectExceptionCode(404);
+        $config = ['rootDir' => dirname(dirname(dirname(__DIR__))) . DS . 'assets'];
+        new VersionsHelper($this->View, [
+            'composerPath' => $config['rootDir'] . DS . 'doesntexist.lock',
         ]);
     }
 
@@ -75,11 +114,35 @@ class VersionsHelperTest extends TestCase
 
     public function testRunGitBad(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(UtilitiesException::class);
+        $this->expectExceptionMessage('{"message":"Command failed","cmd":"cd ');
+        $this->expectExceptionCode(127);
         $versions = new VersionsHelper($this->View, [
             'git' => '/bad/path/to/git',
         ]);
-        $results = $versions->runGit(['branch']);
+        $versions->runGit(['branch']);
+    }
+
+    public function testRunGitEmpty(): void
+    {
+        $this->expectException(UtilitiesException::class);
+        $this->expectExceptionMessage('Empty git command.');
+        $this->expectExceptionCode(404);
+        $versions = new VersionsHelper($this->View, [
+            'git' => '',
+        ]);
+        $versions->runGit(['branch']);
+    }
+
+    public function testRunGitEmptyNoArgs(): void
+    {
+        $this->expectException(UtilitiesException::class);
+        $this->expectExceptionMessage('Empty git command.');
+        $this->expectExceptionCode(404);
+        $versions = new VersionsHelper($this->View, [
+            'git' => '',
+        ]);
+        $versions->runGit();
     }
 
     public function testApp(): void
@@ -90,6 +153,18 @@ class VersionsHelperTest extends TestCase
         // [\d\.-]+ - Testing when a tag is created.
         // dev-(HEAD detached at pull/1/merge)
         $this->assertMatchesRegularExpression('/^(dev-(1\.x-dev|2\.x-dev|master|[\w\-\/\s+]+)|[\d\.-]+\-[a-z0-9]+|[\d\.-]+)$/i', $result);
+        $this->assertStringContainsString('cakephp-utilities/tests/assets', $this->Versions->getRootDir());
+    }
+
+    public function testAppBadGit(): void
+    {
+        $this->expectException(UtilitiesException::class);
+        $this->expectExceptionMessage('Empty git command.');
+        $this->expectExceptionCode(404);
+        $versions = new VersionsHelper($this->View, [
+            'git' => '',
+        ]);
+        $result = $versions->app();
     }
 
     public function testGetPackages(): void
@@ -117,13 +192,15 @@ class VersionsHelperTest extends TestCase
     public function testPackage(): void
     {
         /** @var \ComposerLockParser\Package $result */
-        $result = $this->Versions->package('t4web/composer-lock-parser');
+        $result = $this->Versions->package('fr3nch13/composer-lock-parser');
         $this->assertInstanceOf('\ComposerLockParser\Package', $result);
-        $this->assertEquals('t4web/composer-lock-parser', $result->getName());
+        $this->assertEquals('fr3nch13/composer-lock-parser', $result->getName());
         $this->assertEquals('library', $result->getType());
 
-        $this->expectException(\Exception::class);
-        $result = $this->Versions->package('dont/exist');
+        $this->expectException(UtilitiesException::class);
+        $this->expectExceptionMessage('Unable to find info on dont/exist.');
+        $this->expectExceptionCode(404);
+        $this->Versions->package('dont/exist');
     }
 
     public function testGetTypes(): void
@@ -139,5 +216,22 @@ class VersionsHelperTest extends TestCase
             }
         }
         $this-> assertStringContainsString('cakephp-plugin', $result);
+    }
+
+    public function testGetRootDir(): void
+    {
+        $this->Versions = new VersionsHelper($this->View);
+
+        $this->Versions->rootDir = '';
+        $root = $this->Versions->getRootDir();
+        $this->assertStringContainsString('cakephp-utilities', $root);
+
+        $this->Versions->rootDir = '.';
+        $root = $this->Versions->getRootDir();
+        $this->assertStringContainsString('cakephp-utilities', $root);
+
+        $this->Versions->rootDir = '.' . DS . 'vendor';
+        $root = $this->Versions->getRootDir();
+        $this->assertStringContainsString('cakephp-utilities', $root);
     }
 }

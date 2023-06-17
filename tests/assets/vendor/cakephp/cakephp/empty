@@ -1,0 +1,3 @@
+Placed here so testing of the VersionsHelper
+passes, and can still use the composer.lock
+and composer_bad.lock for testing.

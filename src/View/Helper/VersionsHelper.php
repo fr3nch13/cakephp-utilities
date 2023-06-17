@@ -13,6 +13,7 @@ use Cake\View\Helper;
 use Cake\View\View;
 use ComposerLockParser\ComposerInfo;
 use ComposerLockParser\PackagesCollection;
+use Fr3nch13\Utilities\Exception\UtilitiesException;
 
 /**
  * Versions Helper
@@ -56,57 +57,81 @@ class VersionsHelper extends Helper
     protected $gitCmd = null;
 
     /**
+     * The root directory of the application
+     *
+     * @var string
+     */
+    public $rootDir = '';
+
+    /**
      * Initialize the helper
      *
      * @param \Cake\View\View $View The view object
      * @param array<string, mixed> $config Helper config settings
      * @return void
-     * @throws \Exception when we can't find some of the commands.
-     * @TODO Use more specific exceptions
+     * @throws \Fr3nch13\Utilities\Exception\UtilitiesException when we can't find some of the commands.
      */
     public function __construct(View $View, array $config = [])
     {
         parent::__construct($View, $config);
         // get the git command
         $output = [];
+        $result_code = 0;
         if (isset($config['git'])) {
             $this->gitCmd = $config['git'];
         } else {
-            try {
-                exec('which git', $output);
-            } catch (\Throwable $e) {
-                throw new \Exception(__('Unable to find the `which` command.'));
-            }
-            if (isset($output[0])) {
-                $this->gitCmd = $output[0];
+            $this->exec('which git', $output, $result_code);
+            if ($result_code) {
+                throw new UtilitiesException(__('Unable to find the `which` command. Result: {0}', [
+                    implode(' ', $output),
+                ]), 404);
             } else {
-                throw new \Exception(__('Unable to find the `git` command.'));
+                if (isset($output[0])) {
+                    $this->gitCmd = $output[0];
+                } else {
+                    throw new UtilitiesException(__('Unable to find the `git` command.'), 404);
+                }
             }
         }
         // use an environment vairable if set like in config/.env
         // otherwise use the constant ROOT from the source application
-        $rootDir = getenv('LOCK_DIR') ? getenv('LOCK_DIR') : (getenv('ROOT') ?: ROOT);
+        $this->rootDir = getenv('LOCK_DIR') ?: (getenv('ROOT') ?: ROOT);
         if (isset($config['rootDir'])) {
-            $rootDir = $config['rootDir'];
+            $this->rootDir = $config['rootDir'];
         }
-        $this->composerPath = $rootDir . DS . 'composer.lock';
+
+        $this->composerPath = $this->getRootDir() . DS . 'composer.lock';
         if (isset($config['composerPath'])) {
             $this->composerPath = $config['composerPath'];
         }
 
         if (!is_file($this->composerPath)) {
-            throw new \Exception(__('Unable to find the composer.lock file at: {0}', [
+            throw new UtilitiesException(__('Unable to find the composer.lock file at: {0}', [
                 $this->composerPath,
-            ]));
+            ]), 404);
         }
         try {
             $this->ComposerInfo = new ComposerInfo($this->composerPath);
             $this->ComposerInfo->getPackages();
         } catch (\Throwable $e) {
-            throw new \Exception(__('Unable to parse the composer.lock file at: {0}', [
+            throw new UtilitiesException(__('Unable to parse the composer.lock file at: {0} Msg: {1}', [
                 $this->composerPath,
-            ]));
+                $e->getMessage(),
+            ]), 500, $e);
         }
+    }
+
+    /**
+     * Here so I can mock it mainly.
+     *
+     * @param string $command The external command to run.
+     * @param array<int, string> $output The full output of the command, each line an entry in an array
+     * @param int $result_code The exit code of the command
+     * @return false|string The last line of the output, or false if the command failed.
+     */
+    protected function exec(string $command, &$output = [], &$result_code = 0)
+    {
+        return \exec($command, $output, $result_code);
     }
 
     /**
@@ -139,7 +164,8 @@ class VersionsHelper extends Helper
                 if (isset($results[0])) {
                     $out = $results[0];
                 }
-            } catch (\Exception $e) {
+            } catch (UtilitiesException $e) {
+                // Don't throw an exception, just return the output of the command.
             }
         }
 
@@ -151,7 +177,7 @@ class VersionsHelper extends Helper
      *
      * @param string $name The full name of the composer package ex: fr3nch13/utilities
      * @return object the object that has the info of that package
-     * @throws \Exception throws an exception if the package info can't be found.
+     * @throws \Fr3nch13\Utilities\Exception\UtilitiesException throws an exception if the package info can't be found.
      * @TODO Use more specific exceptions
      */
     public function package(string $name): object
@@ -159,9 +185,9 @@ class VersionsHelper extends Helper
         try {
             return $this->ComposerInfo->getPackages()->getByName($name);
         } catch (\Throwable $e) {
-            throw new \Exception(__('Unable to find info on {0}.', [
+            throw new UtilitiesException(__('Unable to find info on {0}.', [
                 $name,
-            ]));
+            ]), 404, $e);
         }
     }
 
@@ -210,35 +236,88 @@ class VersionsHelper extends Helper
     }
 
     /**
+     * Gets the root path of the application.
+     * Also verifies that it's correct each time this function is ran.
+     *
+     * @return string The path to the root folder
+     * @throws \Fr3nch13\Utilities\Exception\UtilitiesException If we can't find cakephp as this means nothing is installed yet.
+     */
+    public function getRootDir(): string
+    {
+        $findRoot = function ($root): string {
+            $verifier = DS . implode(DS, [
+                'vendor',
+                'cakephp',
+                'cakephp',
+            ]);
+
+            if (is_dir($root . $verifier)) {
+                /** @var string $path */
+                $path = realpath($root);
+
+                return $path;
+            }
+
+            do {
+                $lastRoot = $root;
+                $root = dirname($root);
+                if (is_dir($root . $verifier)) {
+                    /** @var string $path */
+                    $path = realpath($root);
+
+                    return $path;
+                }
+            } while ($root !== $lastRoot);
+
+            throw new UtilitiesException(
+                __('Cannot find the root of the application, unable to get versions.'),
+                404
+            );
+        };
+
+        // not set, so see if we can figure out where we are.
+        if (!$this->rootDir) {
+            $path = realpath(getcwd() ?: '.');
+            if (is_string($path)) {
+                $this->rootDir = $path;
+            }
+        }
+
+        // Validate the root path
+        $this->rootDir = $findRoot($this->rootDir);
+
+        return $this->rootDir;
+    }
+
+    /**
      * Runs the git command with the args
      *
      * @param array<string> $args List of arguments to pass to the git command
      * @return array<int, string> The result of the git command
-     * @throws \Exception if the git command fails.
-     * @TODO Use more specific exceptions
+     * @throws \Fr3nch13\Utilities\Exception\UtilitiesException if the git command fails.
      */
     public function runGit(array $args = []): array
     {
-        $cmd = $this->gitCmd . ' ' . implode(' ', $args);
-        $output = [];
-        try {
-            exec($cmd, $output, $result_code);
-        } catch (\Throwable $e) {
-            throw new \Exception(__('Unable to find the `which` command.'));
+        if (!trim($this->gitCmd)) {
+            throw new UtilitiesException(__('Empty git command.'), 404);
         }
+        $cmd = 'cd ' . $this->getRootDir() . '; ';
+        $cmd .= $this->gitCmd . ' ' . implode(' ', $args);
+        $cmd .= ' 2>&1';
+        $output = [];
+        // removed the try/catch since I added the 'cd [root]' above,
+        // which will never make the $cmd emprty, so the exec() will never throw a ValueError.
+        $last_line = $this->exec($cmd, $output, $result_code);
+
         if ($result_code) {
             /** @var string $msg */
             $msg = json_encode([
                 'message' => 'Command failed',
-                'cmd' => '{0}',
-                'code' => '{1}',
-                'output' => '{2}',
+                'cmd' => $cmd,
+                'code' => $result_code,
+                'output' => implode(' ', $output) . ' ' . $last_line,
             ]);
-            throw new \Exception(__($msg, [
-                $cmd,
-                $result_code,
-                implode("\n", $output),
-            ]));
+            throw new UtilitiesException($msg, $result_code);
         }
         // trim the results
         foreach ($output as $i => $value) {

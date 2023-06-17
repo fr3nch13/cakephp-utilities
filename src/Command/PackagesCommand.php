@@ -46,7 +46,7 @@ class PackagesCommand extends Command
         $parser->addOption('path', [
             'short' => 'p',
             'help' => __('The directory where the composer.lock file is located.'),
-            'default' => getenv('LOCK_DIR') ? getenv('LOCK_DIR') : getenv('ROOT'),
+            'default' => getenv('LOCK_DIR') ?: (getenv('ROOT') ?: ROOT),
         ]);
         $parser->addOption('command', [
             'short' => 'c',
@@ -79,15 +79,15 @@ class PackagesCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): int
     {
-        $path = getenv('LOCK_DIR') ? getenv('LOCK_DIR') : getenv('ROOT');
+        $path = getenv('LOCK_DIR') ?: (getenv('ROOT') ?: ROOT);
         if ($args->getOption('path')) {
             $path = $args->getOption('path');
         }
         $this->View = new View();
         $config = ['rootDir' => $path];
         if ($args->getOption('verbose')) {
-            $io->verbose(__("Using path:\t{0}", [$path]));
-            $io->verbose(__("Using command:\t{0}", [$args->getOption('command')]));
+            $io->verbose(__("Initially Using path:\t{0}", [$path]));
+            $io->verbose(__("Initially Using command:\t{0}", [$args->getOption('command')]));
             $io->hr();
         }
         try {
@@ -97,6 +97,10 @@ class PackagesCommand extends Command
                 $args->getOption('command'),
                 $e->getMessage(),
             ]));
+        }
+        if ($args->getOption('verbose')) {
+            $io->verbose(__("Using derived path:\t{0}", [$this->Versions->getRootDir()]));
+            $io->hr();
         }
         // see which command to run.
         switch ($args->getOption('command')) {

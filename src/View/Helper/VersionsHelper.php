@@ -252,14 +252,18 @@ class VersionsHelper extends Helper
             ]);
 
             if (is_dir($root . $verifier)) {
-                return realpath($root);
+                /** @var string $path */
+                $path = realpath($root);
+                return $path
             }
 
             do {
                 $lastRoot = $root;
                 $root = dirname($root);
                 if (is_dir($root . $verifier)) {
-                    return realpath($root);
+                    /** @var string $path */
+                    $path = realpath($root);
+                    return $path
                 }
             } while ($root !== $lastRoot);
 

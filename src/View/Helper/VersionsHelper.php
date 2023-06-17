@@ -125,7 +125,7 @@ class VersionsHelper extends Helper
      * Here so I can mock it mainly.
      *
      * @param string $command The external command to run.
-     * @param array $output The full output of the command, each line an entry in an array
+     * @param array<int, string> $output The full output of the command, each line an entry in an array
      * @param int $result_code The exit code of the command
      * @return false|string The last line of the output, or false if the command failed.
      */

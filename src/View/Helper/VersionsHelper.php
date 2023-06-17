@@ -254,7 +254,8 @@ class VersionsHelper extends Helper
             if (is_dir($root . $verifier)) {
                 /** @var string $path */
                 $path = realpath($root);
-                return $path
+
+                return $path;
             }
 
             do {
@@ -263,7 +264,8 @@ class VersionsHelper extends Helper
                 if (is_dir($root . $verifier)) {
                     /** @var string $path */
                     $path = realpath($root);
-                    return $path
+
+                    return $path;
                 }
             } while ($root !== $lastRoot);
 

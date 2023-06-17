@@ -275,14 +275,15 @@ class VersionsHelper extends Helper
             );
         };
 
-        // it's already been set, so make sure it's valid
+        // not set, so see if we can figure out where we are.
         if (!$this->rootDir) {
             $path = realpath(getcwd() ?: '.');
-            if ($path) {
+            if (is_string($path)) {
                 $this->rootDir = $path;
             }
         }
 
+        // Validate the root path
         $this->rootDir = $findRoot($this->rootDir);
 
         return $this->rootDir;

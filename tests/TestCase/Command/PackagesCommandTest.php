@@ -135,7 +135,7 @@ class PackagesCommandTest extends TestCase
     {
         $this->exec('packages -p /does/not/exist');
         $this->assertExitCode(\Cake\Command\Command::CODE_ERROR);
-        $this->assertErrorContains('There was an error when running `all`. Error: `Unable to find the composer.lock file at: /does/not/exist/composer.lock`');
+        $this->assertErrorContains('There was an error when running `all`. Error: `Cannot find the root of the application, unable to get versions.`');
     }
 
     /**

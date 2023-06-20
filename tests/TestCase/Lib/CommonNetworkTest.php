@@ -124,6 +124,40 @@ class CommonNetworkTest extends TestCase
     public function testLong2ip(): void
     {
         $this->assertSame('10.10.10.0', $this->CN->long2ip(168430080));
+        $this->assertSame('0.0.0.0', $this->CN->long2ip(0));
+        $this->assertSame('255.255.255.255', $this->CN->long2ip(-1));
+        $this->assertSame('0.0.0.1', $this->CN->long2ip(-4294967295));
         $this->assertNull($this->CN->long2ip('10.10.10.10'));
+    }
+
+    public function testGetMyInterfaces(): void
+    {
+        $result = $this->CN->getMyInterfaces('127.0.0.1');
+        $expected = [
+            'interface' => 'lo',
+            'ip' => '127.0.0.1',
+            'netmask' => '255.0.0.0',
+            'broadcast' => null,
+            'ip6' => '::1',
+            'mac' => null,
+        ];
+        $this->assertSame($expected, $result);
+
+        $result = $this->CN->getMyInterfaces('255.255.255.255');
+        $this->assertNull($result);
+    }
+
+    public function testGetHostname(): void
+    {
+        $result = $this->CN->gethostname();
+        $this->assertNotNull($result);
+        $this->assertMatchesRegularExpression('/[a-f0-9\-.]+/', strtolower($result));
+    }
+
+    public function testGetPrimaryIps(): void
+    {
+        $result = $this->CN->getPrimaryIps();
+        $this->assertNotNull($result);
+        $this->assertIsArray($result);
     }
 }

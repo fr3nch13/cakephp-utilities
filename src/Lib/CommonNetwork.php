@@ -309,7 +309,7 @@ class CommonNetwork
     public function getMyInterfaces(string $ip): ?array
     {
         if (empty($this->myInterfaces)) {
-            $cmdWhich = __('which ifconfig');
+            $cmdWhich = 'which ifconfig';
             $output = [];
             exec($cmdWhich, $output, $return_var);
             if ($return_var || !$output) {
@@ -324,9 +324,11 @@ class CommonNetwork
             foreach ($output as $line) {
                 // get the interface name, and track it.
                 $out = [];
-                if (preg_match('/^([A-z]*\d+)\:*\s+/', $line, $out)) {
-                    $currentInt = $out[1];
-                    if (!isset($this->myInterfaces[$currentInt])) {
+                if (preg_match('/^([A-z]*\d*)\:*\s+/', $line, $out)) {
+                    if (trim($out[1])) {
+                        $currentInt = $out[1];
+                    }
+                    if ($currentInt && !isset($this->myInterfaces[$currentInt])) {
                         $this->myInterfaces[$currentInt] = [
                             'interface' => $currentInt,
                             'ip' => null,
@@ -335,19 +337,23 @@ class CommonNetwork
                             'ip6' => null,
                             'mac' => null,
                         ];
+                        continue;
                     }
-                    continue;
                 }
                 // make sure we have the interface name.
                 if ($currentInt) {
                     // get the ip info
                     $out = [];
                     if (
-                        preg_match('/^\s+inet\s+([0-9.]+)\s+netmask\s+([0-9.]+)\s+broadcast\s+([0-9.]+)/', $line, $out)
+                        preg_match('/^\s+inet\s+([0-9.]+)\s+netmask\s+([0-9.]+)/', $line, $out)
                     ) {
                         $this->myInterfaces[$currentInt]['ip'] = $out[1];
                         $this->myInterfaces[$currentInt]['netmask'] = $out[2];
-                        $this->myInterfaces[$currentInt]['broadcast'] = $out[3];
+                        if (
+                            preg_match('/\s+broadcast\s+([0-9.]+)/', $line, $out)
+                        ) {
+                            $this->myInterfaces[$currentInt]['broadcast'] = $out[1];
+                        }
                         continue;
                     }
                     // get the ipv6
@@ -391,7 +397,7 @@ class CommonNetwork
                     return null;
                 }
             }
-            $dnsRecords = dns_get_record($this->myHostname);
+            $dnsRecords = dns_get_record($this->myHostname, DNS_ALL);
             if ($dnsRecords) {
                 $ips = [];
                 foreach ($dnsRecords as $dnsRecord) {

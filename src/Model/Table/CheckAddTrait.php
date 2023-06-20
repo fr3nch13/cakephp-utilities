@@ -413,6 +413,7 @@ trait CheckAddTrait
     public function fixNameCommon(string $name): string
     {
         $name = trim($name);
+
         return $name;
     }
 }

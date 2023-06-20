@@ -393,7 +393,7 @@ class CommonNetwork
         if (!empty($this->myInterfaces)) {
             if ($ip) {
                 foreach ($this->myInterfaces as $interface) {
-                    if ($interface['ip'] == $ip) {
+                    if (isset($interface['ip']) && $interface['ip'] == $ip) {
                         return $interface;
                     }
                 }

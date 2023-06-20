@@ -174,7 +174,7 @@ class CommonNetworkTest extends TestCase
         $this->assertNull($result);
 
         // not cached return first null;
-        $this->CN->myInterfaces = null;
+        $this->CN->myInterfaces = [];
         $result = $this->CN->getMyInterfaces('255.255.255.255');
         $this->assertNull($result);
     }

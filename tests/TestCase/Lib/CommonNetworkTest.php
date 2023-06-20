@@ -5,7 +5,6 @@ declare(strict_types=1);
  * Test the networking stuff
  *
  * @TODO Mock an environment without any networking at all.
- *
  */
 
 namespace Fr3nch13\Utilities\Test\TestCase\Lib;

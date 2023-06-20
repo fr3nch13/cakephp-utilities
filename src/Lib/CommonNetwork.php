@@ -8,8 +8,8 @@ declare(strict_types=1);
  */
 
 namespace Fr3nch13\Utilities\Lib;
+
 use Fr3nch13\Utilities\Exception\InvalidCharException;
-use Fr3nch13\Utilities\Exception\UtilitiesException;
 
 /**
  * Holds common functions needed for translating different ipv4 stuff.
@@ -421,9 +421,10 @@ class CommonNetwork
         //try to get from my hostname
         $this->myHostname = $this->gethostname();
         if ($this->myHostname) {
-
             // try to get ips for this hostname by DNS.
+            // phpcs:disable Generic.PHP.NoSilencedErrors.Discouraged
             $dnsRecords = @dns_get_record($this->myHostname, DNS_ALL);
+            // phpcs:enable
             if ($dnsRecords) {
                 foreach ($dnsRecords as $dnsRecord) {
                     if (isset($dnsRecord['ip'])) {
@@ -437,7 +438,7 @@ class CommonNetwork
         // pull from the interfaces.
         $interfaces = $this->getMyInterfaces();
         if ($interfaces) {
-            foreach($interfaces as $interface) {
+            foreach ($interfaces as $interface) {
                 if ($interface['broadcast']) {
                     $ip = strval($interface['ip']);
                     $ips[$ip] = $ip;

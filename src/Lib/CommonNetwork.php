@@ -371,6 +371,7 @@ class CommonNetwork
                 }
             }
         }
+        debug($this->myInterfaces);
         if (!empty($this->myInterfaces)) {
             foreach ($this->myInterfaces as $interface) {
                 if ($interface['ip'] == $ip) {

@@ -324,6 +324,18 @@ class CoursesTableTest extends TestCase
     }
 
     /**
+     * Testing fixNameCommon() on the CheckAdd Trait
+     *
+     * @return void
+     */
+    public function testCheckAddTraitFixNameCommon(): void
+    {
+        $name = $this->Courses->fixNameCommon('   New Course 5   ');
+
+        $this->assertSame('New Course 5', $name);
+    }
+
+    /**
      * Testing a finder method.
      *
      * @return void

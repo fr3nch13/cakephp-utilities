@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Fr3nch13\Utilities\Lib;
 
+use Fr3nch13\Utilities\Exception\InvalidCharException;
+
 /**
  * Holds common functions needed for translating different ipv4 stuff.
  *
@@ -245,7 +247,7 @@ class CommonNetwork
             } else {
                 return false;
             }
-        } catch (\Throwable $e) {
+        } catch (InvalidCharException $e) {
             return false;
         }
     }
@@ -292,9 +294,13 @@ class CommonNetwork
      *
      * @param string $ip The IP Address.
      * @return int The integer representing the IP Address.
+     * @throws \Fr3nch13\Utilities\Exception\InvalidCharException if the IP isn't actually an IP.
      */
     public function ip2long(string $ip): ?int
     {
+        if (!preg_match('/^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/', $ip)) {
+            throw new InvalidCharException(__('The given IP Address: `{0}` is not an IP Address', [$ip]), 500);
+        }
         $long = (int)sprintf('%u', \ip2long($ip));
 
         return $long;
@@ -303,73 +309,96 @@ class CommonNetwork
     /**
      * Gets the interface name of the given ip address, or all if none is given.
      *
-     * @param string $ip The ip address of the interface to get.
+     * @param null|string $ip The ip address of the interface to get.
      * @return null|array<string, mixed> Get the name of the interface.
      */
-    public function getMyInterfaces(string $ip): ?array
+    public function getMyInterfaces(?string $ip = null): ?array
     {
-        if (empty($this->myInterfaces)) {
-            $cmdWhich = __('which ifconfig');
-            $output = [];
-            exec($cmdWhich, $output, $return_var);
-            if ($return_var || !$output) {
+        if ($this->myInterfaces) {
+            if ($ip) {
+                foreach ($this->myInterfaces as $interface) {
+                    if ($interface['ip'] == $ip) {
+                        return $interface;
+                    }
+                }
+
                 return null;
+            } else {
+                return $this->myInterfaces;
             }
-            $cmdIfconfig = array_pop($output);
-            exec($cmdIfconfig, $output, $return_var);
-            if ($return_var || !$output) {
-                return null;
-            }
-            $currentInt = null;
-            foreach ($output as $line) {
-                // get the interface name, and track it.
-                $out = [];
-                if (preg_match('/^([A-z]*\d+)\:*\s+/', $line, $out)) {
+        }
+
+        $cmdWhich = 'which ifconfig';
+        $output = [];
+        exec($cmdWhich, $output, $return_var);
+        if ($return_var || !$output) {
+            return null;
+        }
+        $cmdIfconfig = array_pop($output);
+        exec($cmdIfconfig, $output, $return_var);
+        if ($return_var || !$output) {
+            return null;
+        }
+        $currentInt = null;
+        foreach ($output as $line) {
+            // get the interface name, and track it.
+            $out = [];
+            if (preg_match('/^([A-z]*\d*)\:*\s+/', $line, $out)) {
+                if (trim($out[1])) {
                     $currentInt = $out[1];
-                    if (!isset($this->myInterfaces[$currentInt])) {
-                        $this->myInterfaces[$currentInt] = [
-                            'interface' => $currentInt,
-                            'ip' => null,
-                            'netmask' => null,
-                            'broadcast' => null,
-                            'ip6' => null,
-                            'mac' => null,
-                        ];
+                }
+                if ($currentInt && !isset($this->myInterfaces[$currentInt])) {
+                    $this->myInterfaces[$currentInt] = [
+                        'interface' => $currentInt,
+                        'ip' => null,
+                        'netmask' => null,
+                        'broadcast' => null,
+                        'ip6' => null,
+                        'mac' => null,
+                    ];
+                    continue;
+                }
+            }
+            // make sure we have the interface name.
+            if ($currentInt) {
+                // get the ip info
+                $out = [];
+                if (
+                    preg_match('/^\s+inet\s+([0-9.]+)\s+netmask\s+([0-9.]+)/', $line, $out)
+                ) {
+                    $this->myInterfaces[$currentInt]['ip'] = $out[1];
+                    $this->myInterfaces[$currentInt]['netmask'] = $out[2];
+                    if (
+                        preg_match('/\s+broadcast\s+([0-9.]+)/', $line, $out)
+                    ) {
+                        $this->myInterfaces[$currentInt]['broadcast'] = $out[1];
                     }
                     continue;
                 }
-                // make sure we have the interface name.
-                if ($currentInt) {
-                    // get the ip info
-                    $out = [];
-                    if (
-                        preg_match('/^\s+inet\s+([0-9.]+)\s+netmask\s+([0-9.]+)\s+broadcast\s+([0-9.]+)/', $line, $out)
-                    ) {
-                        $this->myInterfaces[$currentInt]['ip'] = $out[1];
-                        $this->myInterfaces[$currentInt]['netmask'] = $out[2];
-                        $this->myInterfaces[$currentInt]['broadcast'] = $out[3];
-                        continue;
-                    }
-                    // get the ipv6
-                    $out = [];
-                    if (preg_match('/^\s+inet6\s+([0-9A-Fa-f:.]+)\s+/', $line, $out)) {
-                        $this->myInterfaces[$currentInt]['ip6'] = $out[1];
-                        continue;
-                    }
-                    // get the MAC Address
-                    $out = [];
-                    if (preg_match('/^\s+ether\s+([0-9A-Fa-f:.]+)\s+/', $line, $out)) {
-                        $this->myInterfaces[$currentInt]['mac'] = strtoupper(str_replace(':', '', $out[1]));
-                        continue;
-                    }
+                // get the ipv6
+                $out = [];
+                if (preg_match('/^\s+inet6\s+([0-9A-Fa-f:.]+)\s+/', $line, $out)) {
+                    $this->myInterfaces[$currentInt]['ip6'] = $out[1];
+                    continue;
+                }
+                // get the MAC Address
+                $out = [];
+                if (preg_match('/^\s+ether\s+([0-9A-Fa-f:.]+)\s+/', $line, $out)) {
+                    $this->myInterfaces[$currentInt]['mac'] = strtoupper(str_replace(':', '', $out[1]));
+                    continue;
                 }
             }
         }
+
         if (!empty($this->myInterfaces)) {
-            foreach ($this->myInterfaces as $interface) {
-                if ($interface['ip'] == $ip) {
-                    return $interface;
+            if ($ip) {
+                foreach ($this->myInterfaces as $interface) {
+                    if (isset($interface['ip']) && $interface['ip'] == $ip) {
+                        return $interface;
+                    }
                 }
+            } else {
+                return $this->myInterfaces;
             }
         }
 
@@ -377,35 +406,49 @@ class CommonNetwork
     }
 
     /**
-     * Gets the primary ip for this host.
+     * Gets the primary ips for this host.
      *
      * @return null|array<string, string> The primary ip address.
      */
     public function getPrimaryIps(): ?array
     {
-        if (empty($this->myIpaddresses)) {
-            //try to get my hostname
-            if (!isset($this->myHostname)) {
-                $this->myHostname = $this->gethostname();
-                if (!$this->myHostname) {
-                    return null;
-                }
-            }
-            $dnsRecords = dns_get_record($this->myHostname);
+        if ($this->myIpaddresses) {
+            return $this->myIpaddresses;
+        }
+
+        $ips = [];
+
+        //try to get from my hostname
+        $this->myHostname = $this->gethostname();
+        if ($this->myHostname) {
+            // try to get ips for this hostname by DNS.
+            // phpcs:disable Generic.PHP.NoSilencedErrors.Discouraged
+            $dnsRecords = @dns_get_record($this->myHostname, DNS_ALL);
+            // phpcs:enable
             if ($dnsRecords) {
-                $ips = [];
                 foreach ($dnsRecords as $dnsRecord) {
                     if (isset($dnsRecord['ip'])) {
                         $dnsRecord['ip'] = strval($dnsRecord['ip']);
                         $ips[$dnsRecord['ip']] = $dnsRecord['ip'];
                     }
                 }
-                if ($ips) {
-                    $this->myIpaddresses = $ips;
+            }
+        }
 
-                    return $this->myIpaddresses;
+        // pull from the interfaces.
+        $interfaces = $this->getMyInterfaces();
+        if ($interfaces) {
+            foreach ($interfaces as $interface) {
+                if ($interface['broadcast']) {
+                    $ip = strval($interface['ip']);
+                    $ips[$ip] = $ip;
                 }
             }
+        }
+        if ($ips) {
+            $this->myIpaddresses = $ips;
+
+            return $this->myIpaddresses;
         }
 
         return null;
@@ -418,12 +461,18 @@ class CommonNetwork
      */
     public function gethostname(): ?string
     {
+        if ($this->myHostname) {
+            return $this->myHostname;
+        }
+
         $cmdHostname = __('hostname --fqdn');
         exec($cmdHostname, $output, $return_var);
         if ($return_var || !$output) {
             return null;
         }
 
-        return array_pop($output);
+        $this->myHostname = array_pop($output);
+
+        return $this->myHostname;
     }
 }

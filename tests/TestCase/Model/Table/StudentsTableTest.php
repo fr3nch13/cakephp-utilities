@@ -281,7 +281,19 @@ class StudentsTableTest extends TestCase
     }
 
     /**
-     * Tests if the fixName method doesn't exist in the CheckAddTrait
+     * Testing fixNameCommon() on the CheckAdd Trait
+     *
+     * @return void
+     */
+    public function testCheckAddTraitFixNameCommon(): void
+    {
+        $name = $this->Students->fixNameCommon('   New Guy   ');
+
+        $this->assertSame('New Guy', $name);
+    }
+
+    /**
+     * Tests if the fixName method doesn't exist in the Model that is using the CheckAdd Trait
      *
      * @return void
      */
@@ -294,7 +306,7 @@ class StudentsTableTest extends TestCase
     }
 
     /**
-     * Tests if the fixName method doesn't exist in the CheckAddTrait
+     * Tests if the sluggableSlugify method doesn't exist in the Model that is using CheckAdd Trait
      *
      * @return void
      */

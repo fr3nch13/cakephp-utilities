@@ -9,12 +9,16 @@ declare(strict_types=1);
 
 namespace Fr3nch13\Utilities\View\Widget;
 
+use Cake\View\Form\ContextInterface;
+use Cake\View\StringTemplate;
+use Cake\View\Widget\WidgetInterface;
+
 /**
  * Color Widget
  *
  * Renders the html color widget on the frontend.
  */
-class ColorWidget implements \Cake\View\Widget\WidgetInterface
+class ColorWidget implements WidgetInterface
 {
     /**
      * StringTemplate instance.
@@ -28,7 +32,7 @@ class ColorWidget implements \Cake\View\Widget\WidgetInterface
      *
      * @param \Cake\View\StringTemplate $templates Templates list.
      */
-    public function __construct($templates)
+    public function __construct(StringTemplate $templates)
     {
         $this->_templates = $templates;
     }
@@ -48,12 +52,12 @@ class ColorWidget implements \Cake\View\Widget\WidgetInterface
      * @param \Cake\View\Form\ContextInterface $context The current form context.
      * @return string
      */
-    public function render(array $data, \Cake\View\Form\ContextInterface $context): string
+    public function render(array $data, ContextInterface $context): string
     {
         $data += [
             'name' => '',
             'val' => null,
-            'type' => 'text',
+            'type' => 'color',
             'escape' => true,
             'templateVars' => [
                 'color' => 'color',

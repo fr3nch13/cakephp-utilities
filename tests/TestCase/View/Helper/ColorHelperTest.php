@@ -52,7 +52,7 @@ class ColorHelperTest extends TestCase
         $this->assertEquals('0', $result);
     }
 
-    public function testRgbToHsl(): void
+    public function testRgbToHlls(): void
     {
         $expected = new Hlls(0, 100, 255, 0);
         $result = $this->Color->hexToRgb('#FFFFFF');
@@ -64,6 +64,30 @@ class ColorHelperTest extends TestCase
 
         $expected = new Hlls(0, 0, 0, 0);
         $result = $this->Color->hexToRgb('#000000');
+        $result = $this->Color->rgbToHlls($result);
+        $this->assertEquals($expected->getHue(), $result->getHue());
+        $this->assertEquals($expected->getLightness(), $result->getLightness());
+        $this->assertEquals($expected->getLuminosity(), $result->getLuminosity());
+        $this->assertEquals($expected->getSaturation(), $result->getSaturation());
+
+        $expected = new Hlls(0, 21, 128, 255);
+        $result = $this->Color->hexToRgb('#FF0000');
+        $result = $this->Color->rgbToHlls($result);
+        $this->assertEquals($expected->getHue(), $result->getHue());
+        $this->assertEquals($expected->getLightness(), $result->getLightness());
+        $this->assertEquals($expected->getLuminosity(), $result->getLuminosity());
+        $this->assertEquals($expected->getSaturation(), $result->getSaturation());
+
+        $expected = new Hlls(85, 72, 128, 255);
+        $result = $this->Color->hexToRgb('#00FF00');
+        $result = $this->Color->rgbToHlls($result);
+        $this->assertEquals($expected->getHue(), $result->getHue());
+        $this->assertEquals($expected->getLightness(), $result->getLightness());
+        $this->assertEquals($expected->getLuminosity(), $result->getLuminosity());
+        $this->assertEquals($expected->getSaturation(), $result->getSaturation());
+
+        $expected = new Hlls(170, 7, 128, 255);
+        $result = $this->Color->hexToRgb('#0000FF');
         $result = $this->Color->rgbToHlls($result);
         $this->assertEquals($expected->getHue(), $result->getHue());
         $this->assertEquals($expected->getLightness(), $result->getLightness());

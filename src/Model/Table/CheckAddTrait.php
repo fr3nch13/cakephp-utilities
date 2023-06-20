@@ -403,4 +403,16 @@ trait CheckAddTrait
             ]);
         }
     }
+
+    /**
+     * Common manipulation of an entity's name
+     *
+     * @param string $name The name to fix/normalize
+     * @return string The fixed name.
+     */
+    public function fixNameCommon(string $name): string
+    {
+        $name = trim($name);
+        return $name;
+    }
 }

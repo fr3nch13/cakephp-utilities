@@ -398,6 +398,8 @@ class CommonNetwork
                 }
             }
             $dnsRecords = dns_get_record($this->myHostname, DNS_ALL);
+            debug($this->myHostname);
+            debug($dnsRecords);
             if ($dnsRecords) {
                 $ips = [];
                 foreach ($dnsRecords as $dnsRecord) {

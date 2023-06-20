@@ -398,9 +398,7 @@ class CommonNetwork
                     return null;
                 }
             }
-            $dnsRecords = dns_get_record($this->myHostname, DNS_ALL);
-            debug($this->myHostname);
-            debug($dnsRecords);
+            $dnsRecords = @dns_get_record($this->myHostname, DNS_ALL);
             if ($dnsRecords) {
                 $ips = [];
                 foreach ($dnsRecords as $dnsRecord) {

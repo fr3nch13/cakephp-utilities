@@ -1,6 +1,13 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * Test the networking stuff
+ *
+ * @TODO Mock an environment without any networking at all.
+ *
+ */
+
 namespace Fr3nch13\Utilities\Test\TestCase\Lib;
 
 use Cake\TestSuite\TestCase;
@@ -103,6 +110,8 @@ class CommonNetworkTest extends TestCase
         $this->assertTrue($this->CN->ipInCidr('10.10.10.10', '10.10.10.0/24'));
         $this->assertFalse($this->CN->ipInCidr('10.10.10.10', '10.10.10.10'));
         $this->assertFalse($this->CN->ipInCidr('10.10.10.10', '10.10.10.0/0'));
+        $this->assertFalse($this->CN->ipInCidr('10.10.10.10', 'notacidr'));
+        $this->assertFalse($this->CN->ipInCidr('10.10.10.10', 'nota/cidr'));
     }
 
     public function testNetmaskToCidr(): void
@@ -132,6 +141,7 @@ class CommonNetworkTest extends TestCase
 
     public function testGetMyInterfaces(): void
     {
+        // not cached, return localloop
         $result = $this->CN->getMyInterfaces('127.0.0.1');
         $expected = [
             'interface' => 'lo',
@@ -143,12 +153,41 @@ class CommonNetworkTest extends TestCase
         ];
         $this->assertSame($expected, $result);
 
+        // cached, return all
+        $result = $this->CN->getMyInterfaces();
+        // will include the localhost interface, atleast.
+        $this->assertGreaterThan(1, count($result));
+
+        // cached return cached localloop
+        $result = $this->CN->getMyInterfaces('127.0.0.1');
+        $expected = [
+            'interface' => 'lo',
+            'ip' => '127.0.0.1',
+            'netmask' => '255.0.0.0',
+            'broadcast' => null,
+            'ip6' => '::1',
+            'mac' => null,
+        ];
+        $this->assertSame($expected, $result);
+
+        // cached return first null;
+        $result = $this->CN->getMyInterfaces('255.255.255.255');
+        $this->assertNull($result);
+
+        // not cached return first null;
+        $this->CN->myInterfaces = null;
         $result = $this->CN->getMyInterfaces('255.255.255.255');
         $this->assertNull($result);
     }
 
     public function testGetHostname(): void
     {
+        // not cached
+        $result = $this->CN->gethostname();
+        $this->assertNotNull($result);
+        $this->assertMatchesRegularExpression('/[a-f0-9\-.]+/', strtolower($result));
+
+        // cached
         $result = $this->CN->gethostname();
         $this->assertNotNull($result);
         $this->assertMatchesRegularExpression('/[a-f0-9\-.]+/', strtolower($result));
@@ -156,6 +195,12 @@ class CommonNetworkTest extends TestCase
 
     public function testGetPrimaryIps(): void
     {
+        // not cached
+        $result = $this->CN->getPrimaryIps();
+        $this->assertNotNull($result);
+        $this->assertIsArray($result);
+
+        // cached
         $result = $this->CN->getPrimaryIps();
         $this->assertNotNull($result);
         $this->assertIsArray($result);

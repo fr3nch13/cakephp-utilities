@@ -18,6 +18,10 @@ final class InitialMigration extends AbstractMigration
      */
     public function change(): void
     {
+        if ($this->getAdapter()->getAdapterType() == 'mysql') {
+            $this->execute('SET UNIQUE_CHECKS = 0;');
+            $this->execute('SET FOREIGN_KEY_CHECKS = 0;');
+        }
 
         $table = $this->table('books');
         $table->addColumn('name', 'string', ['length' => '255'])
@@ -47,5 +51,10 @@ final class InitialMigration extends AbstractMigration
             ->addColumn('student_id', 'integer')
             ->addColumn('grade', 'integer')
             ->create();
+
+        if ($this->getAdapter()->getAdapterType() == 'mysql') {
+            $this->execute('SET FOREIGN_KEY_CHECKS = 1;');
+            $this->execute('SET UNIQUE_CHECKS = 1;');
+        }
     }
 }

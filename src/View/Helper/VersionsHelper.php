@@ -23,18 +23,9 @@ use Fr3nch13\Utilities\Exception\UtilitiesException;
  * Uses the Composer Lock Parser to get detailed version onformation from the composer.lock file.
  * It also uses git to try to determine the version of the application itself.
  *
- * @property \Cake\View\Helper\UrlHelper $Url
- * @property \Cake\View\Helper\HtmlHelper $Html
  */
 class VersionsHelper extends Helper
 {
-    /**
-     * List of loaded helpers.
-     *
-     * @var array<int|string, mixed>
-     */
-    public $helpers = ['Url', 'Html'];
-
     /**
      * Contains the loaded composer info.
      *

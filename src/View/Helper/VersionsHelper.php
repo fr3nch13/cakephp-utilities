@@ -315,7 +315,7 @@ class VersionsHelper extends Helper
                 if (stripos($output, 'fatal: detected dubious ownership in repository') !== false) {
                     $output .= ' (hint: the repository needs to be owned by the user executing the git command.)';
                 }
-                
+
                 /** @var string $msg */
                 $msg = json_encode([
                     'message' => 'Command failed',

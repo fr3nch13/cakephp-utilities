@@ -112,6 +112,23 @@ class VersionsHelperTest extends TestCase
         }
     }
 
+    public function testRunGitWithAddSafe(): void
+    {
+        $results = $this->Versions->runGit(['branch'], true);
+        if (count($results) == 1) {
+            $this->assertMatchesRegularExpression('/^\*\s+([\(\)\w\s\/]+)$/i', $results[0]);
+        } else {
+            $result = '';
+            foreach ($results as $i => $line) {
+                if (substr($results[$i], 0, 1) == '*') {
+                    $result = $results[$i];
+                    break;
+                }
+            }
+            $this-> assertStringContainsString('*', $result);
+        }
+    }
+
     public function testRunGitBad(): void
     {
         $this->expectException(UtilitiesException::class);

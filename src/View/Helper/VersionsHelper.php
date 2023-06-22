@@ -22,7 +22,6 @@ use Fr3nch13\Utilities\Exception\UtilitiesException;
  *
  * Uses the Composer Lock Parser to get detailed version onformation from the composer.lock file.
  * It also uses git to try to determine the version of the application itself.
- *
  */
 class VersionsHelper extends Helper
 {

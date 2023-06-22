@@ -283,15 +283,19 @@ class VersionsHelper extends Helper
      * Runs the git command with the args
      *
      * @param array<string> $args List of arguments to pass to the git command
+     * @param bool $addSafe If git complains about a "fatal: detected dubious ownership in repository at" error, add it.
      * @return array<int, string> The result of the git command
      * @throws \Fr3nch13\Utilities\Exception\UtilitiesException if the git command fails.
      */
-    public function runGit(array $args = []): array
+    public function runGit(array $args = [], bool $addSafe = false): array
     {
         if (!trim($this->gitCmd)) {
             throw new UtilitiesException(__('Empty git command.'), 404);
         }
         $cmd = 'cd ' . $this->getRootDir() . '; ';
+        if ($addSafe) {
+            $cmd .= 'git config --global --add safe.directory ' . $this->getRootDir() . '; ';
+        }
         $cmd .= $this->gitCmd . ' ' . implode(' ', $args);
         $cmd .= ' 2>&1';
         $output = [];
@@ -300,14 +304,23 @@ class VersionsHelper extends Helper
         $last_line = $this->exec($cmd, $output, $result_code);
 
         if ($result_code) {
-            /** @var string $msg */
-            $msg = json_encode([
-                'message' => 'Command failed',
-                'cmd' => $cmd,
-                'code' => $result_code,
-                'output' => implode(' ', $output) . ' ' . $last_line,
-            ]);
-            throw new UtilitiesException($msg, $result_code);
+            $output = implode(' ', $output) . ' ' . $last_line;
+            if (
+                !$addSafe &&
+                $result_code == 128 &&
+                strpos($output, 'fatal: detected dubious ownership in repository') !== false
+            ) {
+                $output = $this->runGit($args, true);
+            } else {
+                /** @var string $msg */
+                $msg = json_encode([
+                    'message' => 'Command failed',
+                    'cmd' => $cmd,
+                    'code' => $result_code,
+                    'output' => $output,
+                ]);
+                throw new UtilitiesException($msg, $result_code);
+            }
         }
         // trim the results
         foreach ($output as $i => $value) {

@@ -308,10 +308,13 @@ class VersionsHelper extends Helper
             if (
                 !$addSafe &&
                 $result_code == 128 &&
-                strpos($output, 'fatal: detected dubious ownership in repository') !== false
+                stripos($output, 'fatal: detected dubious ownership in repository') !== false
             ) {
                 $output = $this->runGit($args, true);
             } else {
+                if (stripos($output, 'fatal: detected dubious ownership in repository') !== false) {
+                    $output .= ' (hint: the repository needs to be owned by the user executing the git command.)'
+                }
                 /** @var string $msg */
                 $msg = json_encode([
                     'message' => 'Command failed',

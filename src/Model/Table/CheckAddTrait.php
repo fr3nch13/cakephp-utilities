@@ -172,12 +172,12 @@ trait CheckAddTrait
      */
     public function checkAdd($name = null, $slug = null, $fields = [], $returnEntity = false)
     {
-        try {
-            // @phpstan-ignore-next-line
-            $name = $this->fixName($name);
-        } catch (\Throwable $e) {
+        // @phpstan-ignore-next-line
+        if (!method_exists($this, 'fixName')) {
             throw new MissingMethodException([self::class, 'fixName', '']);
         }
+
+        $name = $this->fixName($name);
 
         $save = false;
         $new = false;

@@ -19,3 +19,4 @@
 /docs
 /.phpdoc
 phpDocumentor.phar
+.DS_Store

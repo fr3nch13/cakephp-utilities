@@ -97,7 +97,7 @@ jobs:
 
     - name: Run PHPUnit
       run: |
-        apt-get install git -y
+        sudo apt-get install git -y
         composer run-script test
 
   coverage-php:

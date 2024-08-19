@@ -85,7 +85,7 @@ class VersionsHelper extends Helper
         }
         // use an environment vairable if set like in config/.env
         // otherwise use the constant ROOT from the source application
-        $this->rootDir = getenv('LOCK_DIR') ?: (getenv('ROOT') ?: ROOT);
+        $this->rootDir = getenv('LOCK_DIR') ? getenv('LOCK_DIR') : (getenv('ROOT') ? getenv('ROOT') : __DIR__);
         if (isset($config['rootDir'])) {
             $this->rootDir = $config['rootDir'];
         }
@@ -300,7 +300,7 @@ class VersionsHelper extends Helper
         $cmd .= ' 2>&1';
         $output = [];
         // removed the try/catch since I added the 'cd [root]' above,
-        // which will never make the $cmd emprty, so the exec() will never throw a ValueError.
+        // which will never make the $cmd empty, so the exec() will never throw a ValueError.
         $last_line = $this->exec($cmd, $output, $result_code);
 
         if ($result_code) {

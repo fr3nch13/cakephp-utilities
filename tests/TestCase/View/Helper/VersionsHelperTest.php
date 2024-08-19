@@ -129,6 +129,26 @@ class VersionsHelperTest extends TestCase
         }
     }
 
+    public function testRunGitGood(): void
+    {
+        $versions = new VersionsHelper($this->View, [
+            'git' => '/bin/git',
+        ]);
+        $results = $versions->runGit(['branch']);
+        if (count($results) == 1) {
+            $this->assertMatchesRegularExpression('/^\*\s+([\(\)\w\s\/]+)$/i', $results[0]);
+        } else {
+            $result = '';
+            foreach ($results as $i => $line) {
+                if (substr($results[$i], 0, 1) == '*') {
+                    $result = $results[$i];
+                    break;
+                }
+            }
+            $this-> assertStringContainsString('*', $result);
+        }
+    }
+
     public function testRunGitBad(): void
     {
         $this->expectException(UtilitiesException::class);
